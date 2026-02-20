@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#111111" />
+  <link rel="manifest" href="/manifest.webmanifest">
+  <title>Yoga Bonus</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; margin:0; padding:18px; background:#0f0f0f; color:#fff;}
+    .card{background:#1a1a1a; border-radius:16px; padding:16px; margin:12px 0;}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    button{padding:12px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer;}
+    input, select{padding:10px 12px; border-radius:12px; border:1px solid #333; background:#111; color:#fff; width:min(420px,100%);}
+    .muted{opacity:.8; font-size:14px; line-height:1.35;}
+    .big{font-size:44px; font-weight:900; letter-spacing:1px;}
+    .pill{display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid #333; background:#111; font-size:12px; opacity:.9;}
+    .list{display:grid; gap:10px;}
+    .item{padding:12px; border-radius:14px; border:1px solid #2a2a2a; background:#141414; cursor:pointer;}
+    .item:hover{border-color:#444;}
+    h1,h2,h3{margin:0 0 10px;}
+    ul{margin:10px 0 0 18px;}
+    .hide{display:none;}
+    .topbar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+    .linkbtn{background:#111; color:#fff; border:1px solid #333;}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Yoga Bonus</h1>
+    <div class="row">
+      <button id="viewTimer" class="linkbtn">⏱ Timer</button>
+      <button id="viewPoses" class="linkbtn">🧘 Posizioni</button>
+    </div>
+  </div>
+
+  <div class="muted">Dal telefono: apri il link → Menu/Condividi → <b>Aggiungi a schermata Home</b>.</div>
+
+  <!-- TIMER VIEW -->
+  <section id="timerView">
+    <div class="card">
+      <h2>Routine (demo)</h2>
+      <div class="row">
+        <label class="muted">
+          Seleziona:
+          <select id="routine"></select>
+        </label>
+        <button id="start">Start</button>
+        <button id="pause">Pausa</button>
+        <button id="reset">Reset</button>
+      </div>
+      <div class="muted" style="margin-top:8px">
+        Suggerimento: questa è una demo. Poi useremo le 100 posizioni del libro per creare routine complete.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="poseName">Pronto</h2>
+      <div class="big" id="timer">00:00</div>
+      <div class="muted" id="poseInfo">Scegli una routine e premi Start.</div>
+      <div style="margin-top:10px" class="row">
+        <span class="pill" id="stepPill">Step 0/0</span>
+        <span class="pill" id="routinePill">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSES VIEW -->
+  <section id="posesView" class="hide">
+    <div class="card">
+      <h2>Posizioni</h2>
+      <div class="row">
+        <input id="search" placeholder="Cerca (es. schiena, spalle, relax)..." />
+        <select id="filterLevel">
+          <option value="">Tutti i livelli</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+      </div>
+      <div class="muted" style="margin-top:8px">Per ora ci sono poche posizioni demo. Poi inseriamo tutte le 100 del libro.</div>
+    </div>
+
+    <div class="list" id="poseList"></div>
+
+    <div class="card hide" id="poseDetail">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="dName">—</h2>
+        <button id="back" class="linkbtn">← Indietro</button>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <span class="pill" id="dLevel">—</span>
+        <span class="pill" id="dTime">—</span>
+        <span class="pill" id="dBenefits">—</span>
+      </div>
+      <h3>Istruzioni</h3>
+      <ul id="dSteps"></ul>
+      <h3 style="margin-top:14px">Errori comuni</h3>
+      <ul id="dErrors"></ul>
+      <div class="muted" style="margin-top:10px">
+        Nota: quando inseriamo le 100 posizioni, qui puoi aggiungere anche immagini o video per ogni posa (opzionale).
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ====== DEMO DATA (poi lo sostituiamo con le 100 posizioni) ======
+    const POSES = [
+      {
+        id: "breath",
+        nome: "Respirazione consapevole",
+        livello: "Beginner",
+        durataConsigliataSec: 60,
+        benefici: "Calma mentale, focus, preparazione",
+        tags: ["relax","respiro","mindfulness"],
+        istruzioni: [
+          "Siediti comodo, schiena lunga.",
+          "Inspira dal naso 4 secondi.",
+          "Espira 6 secondi, spalle morbide."
+        ],
+        erroriComuni: [
+          "Spalle tese e respiro alto.",
+          "Trattenere il fiato senza volerlo."
+        ]
+      },
+      {
+        id: "cat-cow",
+        nome: "Gatto–Mucca (Cat–Cow)",
+        livello: "Beginner",
+        durataConsigliataSec: 60,
+        benefici: "Mobilità colonna, riscaldamento dolce",
+        tags: ["schiena","mobilità","warmup"],
+        istruzioni: [
+          "In quadrupedia: mani sotto spalle, ginocchia sotto anche.",
+          "Inspira: apri petto e solleva coccige (Mucca).",
+          "Espira: arrotonda la schiena (Gatto)."
+        ],
+        erroriComuni: [
+          "Muovere solo il collo.",
+          "Inarcare troppo la zona lombare."
+        ]
+      },
+      {
+        id: "down-dog",
+        nome: "Cane a testa in giù (Downward Dog)",
+        livello: "Beginner",
+        durataConsigliataSec: 60,
+        benefici: "Allunga posteriori, spalle, decongestiona schiena",
+        tags: ["allungamento","spalle","gambe"],
+        istruzioni: [
+          "Da quadrupedia, punta i piedi e solleva le ginocchia.",
+          "Anche su e indietro, schiena lunga.",
+          "Piega le ginocchia se serve, talloni verso il basso."
+        ],
+        erroriComuni: [
+          "Schiena curva e spalle collassate.",
+          "Forzare talloni a terra perdendo la forma."
+        ]
+      },
+      {
+        id: "child",
+        nome: "Posizione del bambino (Child’s Pose)",
+        livello: "Beginner",
+        durataConsigliataSec: 90,
+        benefici: "Relax, decompressione schiena",
+        tags: ["relax","schiena","calma"],
+        istruzioni: [
+          "Ginocchia a terra, glutei verso i talloni.",
+          "Braccia avanti o lungo i fianchi.",
+          "Respira lento e lascia andare le spalle."
+        ],
+        erroriComuni: [
+          "Forzare se le ginocchia danno fastidio (usa un cuscino)."
+        ]
+      },
+      {
+        id: "savasana",
+        nome: "Savasana (Rilassamento finale)",
+        livello: "Beginner",
+        durataConsigliataSec: 120,
+        benefici: "Recupero, integrazione, rilascio tensioni",
+        tags: ["relax","finale","recupero"],
+        istruzioni: [
+          "Sdraiati supino, gambe comode, braccia morbide.",
+          "Lascia la mandibola rilassata.",
+          "Resta immobile e respira naturale."
+        ],
+        erroriComuni: [
+          "Muoversi continuamente (metti una coperta, crea comfort)."
+        ]
+      }
+    ];
+
+    const routines = [
+      { name: "10 min Mattina (Demo)", steps: [
+        { poseId:"breath", sec:60 },
+        { poseId:"cat-cow", sec:60 },
+        { poseId:"down-dog", sec:60 },
+        { poseId:"child", sec:90 },
+        { poseId:"savasana", sec:210 }
+      ]},
+      { name: "8 min Schiena (Demo)", steps: [
+        { poseId:"cat-cow", sec:90 },
+        { poseId:"down-dog", sec:60 },
+        { poseId:"child", sec:120 },
+        { poseId:"savasana", sec:210 }
+      ]}
+    ];
+
+    // ====== NAV ======
+    const timerView = document.getElementById("timerView");
+    const posesView = document.getElementById("posesView");
+    document.getElementById("viewTimer").onclick = () => { timerView.classList.remove("hide"); posesView.classList.add("hide"); };
+    document.getElementById("viewPoses").onclick = () => { posesView.classList.remove("hide"); timerView.classList.add("hide"); renderList(); };
+
+    // ====== TIMER ======
+    const sel = document.getElementById("routine");
+    routines.forEach((r,i)=> {
+      const o=document.createElement("option"); o.value=i; o.textContent=r.name; sel.appendChild(o);
+    });
+
+    let interval=null, stepIdx=0, remaining=0, paused=true, current=null;
+
+    const $timer=document.getElementById("timer");
+    const $pose=document.getElementById("poseName");
+    const $info=document.getElementById("poseInfo");
+    const $stepPill=document.getElementById("stepPill");
+    const $routinePill=document.getElementById("routinePill");
+
+    function fmt(s){
+      const m = Math.floor(s/60).toString().padStart(2,'0');
+      const sec = (s%60).toString().padStart(2,'0');
+      return `${m}:${sec}`;
+    }
+    function getPoseById(id){ return POSES.find(p=>p.id===id); }
+
+    function loadStep(){
+      current = routines[+sel.value];
+      const step = current.steps[stepIdx];
+      const pose = getPoseById(step.poseId) || {nome:"Posa", benefici:""};
+      remaining = step.sec;
+      $pose.textContent = pose.nome;
+      $info.textContent = pose.benefici || "—";
+      $timer.textContent = fmt(remaining);
+      $stepPill.textContent = `Step ${stepIdx+1}/${current.steps.length}`;
+      $routinePill.textContent = current.name;
+    }
+
+    function tick(){
+      if(paused) return;
+      remaining--;
+      $timer.textContent = fmt(Math.max(0,remaining));
+      if(remaining <= 0){
+        stepIdx++;
+        if(stepIdx >= current.steps.length){
+          paused=true;
+          clearInterval(interval);
+          interval=null;
+          $pose.textContent="Routine completata ✅";
+          $info.textContent="Ottimo. Vuoi rifarla o sceglierne un’altra?";
+          $timer.textContent="00:00";
+          $stepPill.textContent = `Step ${current.steps.length}/${current.steps.length}`;
+          // salva completamento
+          const done = JSON.parse(localStorage.getItem("yoga_done")||"[]");
+          done.push({ts:Date.now(), routine:current.name});
+          localStorage.setItem("yoga_done", JSON.stringify(done));
+          return;
+        }
+        loadStep();
+      }
+    }
+
+    document.getElementById("start").onclick = () => {
+      if(!current){ stepIdx=0; loadStep(); }
+      paused=false;
+      if(!interval) interval=setInterval(tick,1000);
+    };
+    document.getElementById("pause").onclick = () => paused=true;
+    document.getElementById("reset").onclick = () => {
+      paused=true; stepIdx=0; current=null;
+      if(interval){ clearInterval(interval); interval=null; }
+      $pose.textContent="Pronto"; $info.textContent="Scegli una routine e premi Start."; $timer.textContent="00:00";
+      $stepPill.textContent="Step 0/0"; $routinePill.textContent="—";
+    };
+    sel.onchange = () => { stepIdx=0; current=null; $pose.textContent="Pronto"; $info.textContent="Premi Start."; $timer.textContent="00:00"; $stepPill.textContent="Step 0/0"; $routinePill.textContent="—"; };
+
+    // ====== POSES LIST + DETAIL ======
+    const $list = document.getElementById("poseList");
+    const $search = document.getElementById("search");
+    const $filterLevel = document.getElementById("filterLevel");
+    const $detail = document.getElementById("poseDetail");
+
+    function renderList(){
+      $detail.classList.add("hide");
+      $list.classList.remove("hide");
+      const q = ($search.value||"").trim().toLowerCase();
+      const lvl = $filterLevel.value;
+
+      const filtered = POSES.filter(p => {
+        const text = (p.nome+" "+p.benefici+" "+(p.tags||[]).join(" ")).toLowerCase();
+        const okQ = !q || text.includes(q);
+        const okL = !lvl || p.livello === lvl;
+        return okQ && okL;
+      });
+
+      $list.innerHTML = "";
+      filtered.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `<div style="font-weight:900">${p.nome}</div>
+                         <div class="muted">${p.benefici}</div>
+                         <div style="margin-top:8px" class="row">
+                           <span class="pill">${p.livello}</span>
+                           <span class="pill">~ ${Math.round((p.durataConsigliataSec||60)/60)} min</span>
+                         </div>`;
+        div.onclick = () => showDetail(p.id);
+        $list.appendChild(div);
+      });
+
+      if(filtered.length === 0){
+        const empty = document.createElement("div");
+        empty.className="card";
+        empty.innerHTML = `<div class="muted">Nessun risultato. Prova con un’altra parola.</div>`;
+        $list.appendChild(empty);
+      }
+    }
+
+    function showDetail(id){
+      const p = getPoseById(id);
+      if(!p) return;
+      document.getElementById("dName").textContent = p.nome;
+      document.getElementById("dLevel").textContent = p.livello;
+      document.getElementById("dTime").textContent = `Durata consigliata: ${fmt(p.durataConsigliataSec||60)}`;
+      document.getElementById("dBenefits").textContent = p.benefici;
+
+      const steps = document.getElementById("dSteps");
+      const errs = document.getElementById("dErrors");
+      steps.innerHTML = ""; errs.innerHTML = "";
+
+      (p.istruzioni||[]).forEach(s => {
+        const li=document.createElement("li"); li.textContent=s; steps.appendChild(li);
+      });
+      (p.erroriComuni||[]).forEach(s => {
+        const li=document.createElement("li"); li.textContent=s; errs.appendChild(li);
+      });
+
+      $list.classList.add("hide");
+      $detail.classList.remove("hide");
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    document.getElementById("back").onclick = () => { $detail.classList.add("hide"); $list.classList.remove("hide"); };
+
+    $search.oninput = renderList;
+    $filterLevel.onchange = renderList;
+
+    // PWA: registra service worker
+    if("serviceWorker" in navigator){
+      navigator.serviceWorker.register("/sw.js").catch(()=>{});
+    }
+  </script>
+</body>
+</html>
