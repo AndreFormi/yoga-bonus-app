@@ -1,4 +1,4 @@
-const CACHE = "yoga-bonus-v1";
+const CACHE = "stuhl-yoga-bonus-v1";
 const ASSETS = ["/", "/index.html", "/manifest.webmanifest", "/sw.js"];
 
 self.addEventListener("install", (e) => {
@@ -8,3 +8,4 @@ self.addEventListener("install", (e) => {
 self.addEventListener("fetch", (e) => {
   e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
 });
+
