@@ -3,62 +3,242 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#111111" />
+  <meta name="theme-color" content="#F28402" />
   <link rel="manifest" href="/manifest.webmanifest">
-  <title>Yoga Bonus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <title>Stuhl Yoga Bonus</title>
+
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; margin:0; padding:18px; background:#0f0f0f; color:#fff;}
-    .card{background:#1a1a1a; border-radius:16px; padding:16px; margin:12px 0;}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
-    button{padding:12px 14px; border:0; border-radius:12px; font-weight:800; cursor:pointer;}
-    input, select{padding:10px 12px; border-radius:12px; border:1px solid #333; background:#111; color:#fff; width:min(420px,100%);}
-    .muted{opacity:.8; font-size:14px; line-height:1.35;}
-    .big{font-size:44px; font-weight:900; letter-spacing:1px;}
-    .pill{display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid #333; background:#111; font-size:12px; opacity:.9;}
-    .list{display:grid; gap:10px;}
-    .item{padding:12px; border-radius:14px; border:1px solid #2a2a2a; background:#141414; cursor:pointer;}
-    .item:hover{border-color:#444;}
-    h1,h2,h3{margin:0 0 10px;}
-    ul{margin:10px 0 0 18px;}
-    .hide{display:none;}
-    .topbar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
-    .linkbtn{background:#111; color:#fff; border:1px solid #333;}
+    :root{
+      --bg:#F28402;        /* arancione cover */
+      --bg2:#D97002;       /* arancione scuro */
+      --card:#F9F6F3;      /* bianco caldo */
+      --text:#4B092D;      /* viola scuro */
+      --white:#F9F6F3;
+      --accent:#03FBE6;    /* turchese banner */
+      --accent2:#4B092D;
+      --muted: rgba(249,246,243,.85);
+      --shadow: 0 10px 28px rgba(0,0,0,.18);
+      --stroke: rgba(75,9,45,.18);
+    }
+
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin:0;
+      padding:18px;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      color: var(--white);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+
+    h1{
+      font-family: "Bebas Neue", Inter, sans-serif;
+      letter-spacing: 1px;
+      font-size: 46px;
+      margin:0;
+      line-height: .95;
+    }
+
+    .sub{
+      color: var(--muted);
+      font-size:14px;
+      margin: 6px 0 10px;
+      line-height:1.35;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .badgeRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin: 10px 0 12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:900;
+      letter-spacing:.2px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.25);
+      user-select:none;
+    }
+
+    .badge.purple{
+      background: var(--accent2);
+      color: var(--white);
+    }
+
+    .badge.cyan{
+      background: var(--accent);
+      color: #0b0b0b;
+      border: 1px solid rgba(0,0,0,.15);
+    }
+
+    .navbtn{
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(249,246,243,.65);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .card{
+      background: var(--card);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 16px;
+      margin: 12px 0;
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+    }
+
+    .card h2{
+      margin:0 0 10px;
+      font-size:18px;
+    }
+
+    .mutedDark{
+      opacity:.86;
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    button{
+      background: var(--accent);
+      color: #0b0b0b;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor:pointer;
+    }
+
+    button.secondary{
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(75,9,45,.28);
+    }
+
+    input, select{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(75,9,45,.22);
+      background: rgba(255,255,255,.78);
+      color: var(--text);
+      width: min(420px, 100%);
+      outline: none;
+      font-weight: 700;
+    }
+
+    .big{
+      font-size: 52px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    .pill{
+      display:inline-block;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(75,9,45,.25);
+      background: rgba(75,9,45,.08);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .list{
+      display:grid;
+      gap:10px;
+    }
+
+    .item{
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(75,9,45,.18);
+      background: rgba(255,255,255,.68);
+      cursor:pointer;
+    }
+
+    .item:hover{
+      border-color: rgba(75,9,45,.35);
+    }
+
+    .itemTitle{
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    ul{
+      margin: 10px 0 0 18px;
+    }
+
+    .hide{ display:none; }
   </style>
 </head>
+
 <body>
   <div class="topbar">
-    <h1>Yoga Bonus</h1>
+    <div>
+      <h1>Stuhl-Yoga Bonus</h1>
+      <div class="sub">Apri dal telefono e poi: Menu/Condividi → <b>Aggiungi a schermata Home</b>.</div>
+    </div>
+
     <div class="row">
-      <button id="viewTimer" class="linkbtn">⏱ Timer</button>
-      <button id="viewPoses" class="linkbtn">🧘 Posizioni</button>
+      <button id="viewTimer" class="navbtn">⏱ Timer</button>
+      <button id="viewPoses" class="navbtn">🧘 Posizioni</button>
     </div>
   </div>
 
-  <div class="muted">Dal telefono: apri il link → Menu/Condividi → <b>Aggiungi a schermata Home</b>.</div>
+  <div class="badgeRow">
+    <div class="badge purple">10 MINUTI AL GIORNO</div>
+    <div class="badge cyan">INKL. BONUS • Routine + Timer</div>
+  </div>
 
   <!-- TIMER VIEW -->
   <section id="timerView">
     <div class="card">
       <h2>Routine (demo)</h2>
       <div class="row">
-        <label class="muted">
+        <label class="mutedDark">
           Seleziona:
           <select id="routine"></select>
         </label>
         <button id="start">Start</button>
-        <button id="pause">Pausa</button>
-        <button id="reset">Reset</button>
+        <button id="pause" class="secondary">Pausa</button>
+        <button id="reset" class="secondary">Reset</button>
       </div>
-      <div class="muted" style="margin-top:8px">
-        Suggerimento: questa è una demo. Poi useremo le 100 posizioni del libro per creare routine complete.
+      <div class="mutedDark" style="margin-top:10px">
+        Questa è una demo. Quando vuoi, inseriamo le 100 posizioni del libro e creiamo routine complete.
       </div>
     </div>
 
     <div class="card">
       <h2 id="poseName">Pronto</h2>
       <div class="big" id="timer">00:00</div>
-      <div class="muted" id="poseInfo">Scegli una routine e premi Start.</div>
-      <div style="margin-top:10px" class="row">
+      <div class="mutedDark" id="poseInfo">Scegli una routine e premi Start.</div>
+
+      <div style="margin-top:12px" class="row">
         <span class="pill" id="stepPill">Step 0/0</span>
         <span class="pill" id="routinePill">—</span>
       </div>
@@ -73,12 +253,14 @@
         <input id="search" placeholder="Cerca (es. schiena, spalle, relax)..." />
         <select id="filterLevel">
           <option value="">Tutti i livelli</option>
-          <option>Beginner</option>
-          <option>Intermediate</option>
-          <option>Advanced</option>
+          <option>Base</option>
+          <option>Intermedio</option>
+          <option>Avanzato</option>
         </select>
       </div>
-      <div class="muted" style="margin-top:8px">Per ora ci sono poche posizioni demo. Poi inseriamo tutte le 100 del libro.</div>
+      <div class="mutedDark" style="margin-top:10px">
+        Apri una posizione e premi <b>⏱ Avvia timer</b> per partire con la durata consigliata.
+      </div>
     </div>
 
     <div class="list" id="poseList"></div>
@@ -86,53 +268,60 @@
     <div class="card hide" id="poseDetail">
       <div class="row" style="justify-content:space-between">
         <h2 id="dName">—</h2>
-        <button id="back" class="linkbtn">← Indietro</button>
+        <div class="row">
+          <button id="startPoseTimer">⏱ Avvia timer</button>
+          <button id="back" class="secondary">← Indietro</button>
+        </div>
       </div>
-      <div class="row" style="margin-bottom:10px">
+
+      <div class="row" style="margin: 8px 0 12px">
         <span class="pill" id="dLevel">—</span>
         <span class="pill" id="dTime">—</span>
         <span class="pill" id="dBenefits">—</span>
       </div>
-      <h3>Istruzioni</h3>
+
+      <h3 style="margin:0 0 8px">Istruzioni</h3>
       <ul id="dSteps"></ul>
-      <h3 style="margin-top:14px">Errori comuni</h3>
+
+      <h3 style="margin:14px 0 8px">Errori comuni</h3>
       <ul id="dErrors"></ul>
-      <div class="muted" style="margin-top:10px">
-        Nota: quando inseriamo le 100 posizioni, qui puoi aggiungere anche immagini o video per ogni posa (opzionale).
+
+      <div class="mutedDark" style="margin-top:12px">
+        (Opzionale) Qui possiamo aggiungere immagini o video per ogni posizione.
       </div>
     </div>
   </section>
 
   <script>
-    // ====== DEMO DATA (poi lo sostituiamo con le 100 posizioni) ======
+    // ====== DATI DEMO (poi li sostituiamo con le 100 posizioni) ======
     const POSES = [
       {
-        id: "breath",
+        id: "respiro",
         nome: "Respirazione consapevole",
-        livello: "Beginner",
+        livello: "Base",
         durataConsigliataSec: 60,
         benefici: "Calma mentale, focus, preparazione",
         tags: ["relax","respiro","mindfulness"],
         istruzioni: [
-          "Siediti comodo, schiena lunga.",
-          "Inspira dal naso 4 secondi.",
-          "Espira 6 secondi, spalle morbide."
+          "Siediti comodo (anche su sedia), schiena lunga.",
+          "Inspira dal naso per 4 secondi.",
+          "Espira lentamente per 6 secondi, spalle morbide."
         ],
         erroriComuni: [
-          "Spalle tese e respiro alto.",
+          "Spalle tese e respiro alto nel petto.",
           "Trattenere il fiato senza volerlo."
         ]
       },
       {
-        id: "cat-cow",
-        nome: "Gatto–Mucca (Cat–Cow)",
-        livello: "Beginner",
+        id: "gatto-mucca",
+        nome: "Gatto–Mucca (mobilità della colonna)",
+        livello: "Base",
         durataConsigliataSec: 60,
-        benefici: "Mobilità colonna, riscaldamento dolce",
+        benefici: "Riscaldamento dolce, mobilità della schiena",
         tags: ["schiena","mobilità","warmup"],
         istruzioni: [
-          "In quadrupedia: mani sotto spalle, ginocchia sotto anche.",
-          "Inspira: apri petto e solleva coccige (Mucca).",
+          "Seduto o in quadrupedia: allunga la colonna.",
+          "Inspira: apri il petto (Mucca).",
           "Espira: arrotonda la schiena (Gatto)."
         ],
         erroriComuni: [
@@ -141,82 +330,93 @@
         ]
       },
       {
-        id: "down-dog",
-        nome: "Cane a testa in giù (Downward Dog)",
-        livello: "Beginner",
+        id: "allungamento-spalle",
+        nome: "Allungamento spalle da seduti",
+        livello: "Base",
         durataConsigliataSec: 60,
-        benefici: "Allunga posteriori, spalle, decongestiona schiena",
-        tags: ["allungamento","spalle","gambe"],
+        benefici: "Rilassa spalle e collo",
+        tags: ["spalle","collo","relax"],
         istruzioni: [
-          "Da quadrupedia, punta i piedi e solleva le ginocchia.",
-          "Anche su e indietro, schiena lunga.",
-          "Piega le ginocchia se serve, talloni verso il basso."
+          "Siediti dritto, piedi a terra.",
+          "Porta una mano al gomito opposto e avvicina delicatamente al petto.",
+          "Respira e cambia lato."
         ],
         erroriComuni: [
-          "Schiena curva e spalle collassate.",
-          "Forzare talloni a terra perdendo la forma."
+          "Tirare troppo forte.",
+          "Spalle sollevate verso le orecchie."
         ]
       },
       {
-        id: "child",
-        nome: "Posizione del bambino (Child’s Pose)",
-        livello: "Beginner",
-        durataConsigliataSec: 90,
-        benefici: "Relax, decompressione schiena",
-        tags: ["relax","schiena","calma"],
+        id: "torsione",
+        nome: "Torsione dolce da seduti",
+        livello: "Base",
+        durataConsigliataSec: 60,
+        benefici: "Mobilità della colonna, respiro più ampio",
+        tags: ["schiena","mobilità"],
         istruzioni: [
-          "Ginocchia a terra, glutei verso i talloni.",
-          "Braccia avanti o lungo i fianchi.",
-          "Respira lento e lascia andare le spalle."
+          "Siediti alto, mani sulle cosce.",
+          "Ruota il busto lentamente verso destra, senza forzare.",
+          "Mantieni 3–4 respiri e cambia lato."
         ],
         erroriComuni: [
-          "Forzare se le ginocchia danno fastidio (usa un cuscino)."
+          "Forzare la rotazione.",
+          "Chiudere il petto e collassare in avanti."
         ]
       },
       {
-        id: "savasana",
-        nome: "Savasana (Rilassamento finale)",
-        livello: "Beginner",
+        id: "rilassamento",
+        nome: "Rilassamento finale (Savasana da seduti)",
+        livello: "Base",
         durataConsigliataSec: 120,
-        benefici: "Recupero, integrazione, rilascio tensioni",
+        benefici: "Recupero, rilascio tensioni",
         tags: ["relax","finale","recupero"],
         istruzioni: [
-          "Sdraiati supino, gambe comode, braccia morbide.",
-          "Lascia la mandibola rilassata.",
-          "Resta immobile e respira naturale."
+          "Siediti comodo, appoggia la schiena.",
+          "Rilassa mandibola e spalle.",
+          "Respira naturale e resta fermo."
         ],
         erroriComuni: [
-          "Muoversi continuamente (metti una coperta, crea comfort)."
+          "Muoversi continuamente.",
+          "Postura scomoda (aggiungi un cuscino se serve)."
         ]
       }
     ];
 
     const routines = [
       { name: "10 min Mattina (Demo)", steps: [
-        { poseId:"breath", sec:60 },
-        { poseId:"cat-cow", sec:60 },
-        { poseId:"down-dog", sec:60 },
-        { poseId:"child", sec:90 },
-        { poseId:"savasana", sec:210 }
+        { poseId:"respiro", sec:60 },
+        { poseId:"gatto-mucca", sec:60 },
+        { poseId:"allungamento-spalle", sec:60 },
+        { poseId:"torsione", sec:60 },
+        { poseId:"rilassamento", sec:360 }
       ]},
       { name: "8 min Schiena (Demo)", steps: [
-        { poseId:"cat-cow", sec:90 },
-        { poseId:"down-dog", sec:60 },
-        { poseId:"child", sec:120 },
-        { poseId:"savasana", sec:210 }
+        { poseId:"gatto-mucca", sec:90 },
+        { poseId:"torsione", sec:90 },
+        { poseId:"rilassamento", sec:300 }
       ]}
     ];
 
     // ====== NAV ======
     const timerView = document.getElementById("timerView");
     const posesView = document.getElementById("posesView");
-    document.getElementById("viewTimer").onclick = () => { timerView.classList.remove("hide"); posesView.classList.add("hide"); };
-    document.getElementById("viewPoses").onclick = () => { posesView.classList.remove("hide"); timerView.classList.add("hide"); renderList(); };
+    document.getElementById("viewTimer").onclick = () => {
+      timerView.classList.remove("hide");
+      posesView.classList.add("hide");
+    };
+    document.getElementById("viewPoses").onclick = () => {
+      posesView.classList.remove("hide");
+      timerView.classList.add("hide");
+      renderList();
+    };
 
     // ====== TIMER ======
     const sel = document.getElementById("routine");
     routines.forEach((r,i)=> {
-      const o=document.createElement("option"); o.value=i; o.textContent=r.name; sel.appendChild(o);
+      const o=document.createElement("option");
+      o.value=i;
+      o.textContent=r.name;
+      sel.appendChild(o);
     });
 
     let interval=null, stepIdx=0, remaining=0, paused=true, current=null;
@@ -235,15 +435,14 @@
     function getPoseById(id){ return POSES.find(p=>p.id===id); }
 
     function loadStep(){
-      current = routines[+sel.value];
       const step = current.steps[stepIdx];
-      const pose = getPoseById(step.poseId) || {nome:"Posa", benefici:""};
+      const pose = getPoseById(step.poseId) || {nome:"Posizione", benefici:""};
       remaining = step.sec;
       $pose.textContent = pose.nome;
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Step ${stepIdx+1}/${current.steps.length}`;
-      $routinePill.textContent = current.name;
+      $routinePill.textContent = current.name || "—";
     }
 
     function tick(){
@@ -260,7 +459,7 @@
           $info.textContent="Ottimo. Vuoi rifarla o sceglierne un’altra?";
           $timer.textContent="00:00";
           $stepPill.textContent = `Step ${current.steps.length}/${current.steps.length}`;
-          // salva completamento
+
           const done = JSON.parse(localStorage.getItem("yoga_done")||"[]");
           done.push({ts:Date.now(), routine:current.name});
           localStorage.setItem("yoga_done", JSON.stringify(done));
@@ -271,28 +470,48 @@
     }
 
     document.getElementById("start").onclick = () => {
-      if(!current){ stepIdx=0; loadStep(); }
+      if(!current){
+        current = routines[+sel.value];
+        stepIdx=0;
+        loadStep();
+      }
       paused=false;
       if(!interval) interval=setInterval(tick,1000);
     };
+
     document.getElementById("pause").onclick = () => paused=true;
+
     document.getElementById("reset").onclick = () => {
       paused=true; stepIdx=0; current=null;
       if(interval){ clearInterval(interval); interval=null; }
-      $pose.textContent="Pronto"; $info.textContent="Scegli una routine e premi Start."; $timer.textContent="00:00";
-      $stepPill.textContent="Step 0/0"; $routinePill.textContent="—";
+      $pose.textContent="Pronto";
+      $info.textContent="Scegli una routine e premi Start.";
+      $timer.textContent="00:00";
+      $stepPill.textContent="Step 0/0";
+      $routinePill.textContent="—";
     };
-    sel.onchange = () => { stepIdx=0; current=null; $pose.textContent="Pronto"; $info.textContent="Premi Start."; $timer.textContent="00:00"; $stepPill.textContent="Step 0/0"; $routinePill.textContent="—"; };
 
-    // ====== POSES LIST + DETAIL ======
+    sel.onchange = () => {
+      stepIdx=0;
+      current=null;
+      $pose.textContent="Pronto";
+      $info.textContent="Premi Start.";
+      $timer.textContent="00:00";
+      $stepPill.textContent="Step 0/0";
+      $routinePill.textContent="—";
+    };
+
+    // ====== POSIZIONI: LISTA + DETTAGLIO + TIMER SINGOLO ======
     const $list = document.getElementById("poseList");
     const $search = document.getElementById("search");
     const $filterLevel = document.getElementById("filterLevel");
     const $detail = document.getElementById("poseDetail");
+    let selectedPoseId = null;
 
     function renderList(){
       $detail.classList.add("hide");
       $list.classList.remove("hide");
+
       const q = ($search.value||"").trim().toLowerCase();
       const lvl = $filterLevel.value;
 
@@ -307,12 +526,14 @@
       filtered.forEach(p => {
         const div = document.createElement("div");
         div.className = "item";
-        div.innerHTML = `<div style="font-weight:900">${p.nome}</div>
-                         <div class="muted">${p.benefici}</div>
-                         <div style="margin-top:8px" class="row">
-                           <span class="pill">${p.livello}</span>
-                           <span class="pill">~ ${Math.round((p.durataConsigliataSec||60)/60)} min</span>
-                         </div>`;
+        div.innerHTML = `
+          <div class="itemTitle">${p.nome}</div>
+          <div class="mutedDark">${p.benefici}</div>
+          <div style="margin-top:10px" class="row">
+            <span class="pill">${p.livello}</span>
+            <span class="pill">~ ${Math.max(1, Math.round((p.durataConsigliataSec||60)/60))} min</span>
+          </div>
+        `;
         div.onclick = () => showDetail(p.id);
         $list.appendChild(div);
       });
@@ -320,14 +541,16 @@
       if(filtered.length === 0){
         const empty = document.createElement("div");
         empty.className="card";
-        empty.innerHTML = `<div class="muted">Nessun risultato. Prova con un’altra parola.</div>`;
+        empty.innerHTML = `<div class="mutedDark">Nessun risultato. Prova con un’altra parola.</div>`;
         $list.appendChild(empty);
       }
     }
 
     function showDetail(id){
+      selectedPoseId = id;
       const p = getPoseById(id);
       if(!p) return;
+
       document.getElementById("dName").textContent = p.nome;
       document.getElementById("dLevel").textContent = p.livello;
       document.getElementById("dTime").textContent = `Durata consigliata: ${fmt(p.durataConsigliataSec||60)}`;
@@ -338,10 +561,15 @@
       steps.innerHTML = ""; errs.innerHTML = "";
 
       (p.istruzioni||[]).forEach(s => {
-        const li=document.createElement("li"); li.textContent=s; steps.appendChild(li);
+        const li=document.createElement("li");
+        li.textContent=s;
+        steps.appendChild(li);
       });
+
       (p.erroriComuni||[]).forEach(s => {
-        const li=document.createElement("li"); li.textContent=s; errs.appendChild(li);
+        const li=document.createElement("li");
+        li.textContent=s;
+        errs.appendChild(li);
       });
 
       $list.classList.add("hide");
@@ -349,15 +577,40 @@
       window.scrollTo({top:0, behavior:"smooth"});
     }
 
-    document.getElementById("back").onclick = () => { $detail.classList.add("hide"); $list.classList.remove("hide"); };
+    document.getElementById("back").onclick = () => {
+      $detail.classList.add("hide");
+      $list.classList.remove("hide");
+    };
+
+    document.getElementById("startPoseTimer").onclick = () => {
+      if(!selectedPoseId) return;
+      const p = getPoseById(selectedPoseId);
+      if(!p) return;
+
+      const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
+
+      // crea una "routine" con 1 sola posa
+      current = { name: p.nome, steps: [{ poseId: p.id, sec: secs }] };
+      stepIdx = 0;
+      paused = false;
+
+      loadStep();
+
+      // passa al timer e parte
+      timerView.classList.remove("hide");
+      posesView.classList.add("hide");
+
+      if(!interval) interval = setInterval(tick, 1000);
+    };
 
     $search.oninput = renderList;
     $filterLevel.onchange = renderList;
 
-    // PWA: registra service worker
+    // ====== PWA ======
     if("serviceWorker" in navigator){
       navigator.serviceWorker.register("/sw.js").catch(()=>{});
     }
   </script>
 </body>
 </html>
+
