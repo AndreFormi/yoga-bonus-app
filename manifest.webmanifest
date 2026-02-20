@@ -1,9 +1,10 @@
 {
-  "name": "Yoga Bonus",
+  "name": "Stuhl Yoga Bonus",
   "short_name": "Yoga",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#111111",
+  "background_color": "#F28402",
+  "theme_color": "#F28402",
   "icons": []
 }
+
