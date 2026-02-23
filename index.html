@@ -10,12 +10,12 @@
 
   <style>
     :root{
-      --bg:#F28402;        /* arancione cover */
-      --bg2:#D97002;       /* arancione scuro */
-      --card:#F9F6F3;      /* bianco caldo */
-      --text:#4B092D;      /* viola scuro */
+      --bg:#F28402;
+      --bg2:#D97002;
+      --card:#F9F6F3;
+      --text:#4B092D;
       --white:#F9F6F3;
-      --accent:#03FBE6;    /* turchese banner */
+      --accent:#03FBE6;
       --accent2:#4B092D;
       --muted: rgba(249,246,243,.85);
       --shadow: 0 10px 28px rgba(0,0,0,.18);
@@ -178,10 +178,23 @@
       border: 1px solid rgba(75,9,45,.18);
       background: rgba(255,255,255,.68);
       cursor:pointer;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
     }
 
     .item:hover{
       border-color: rgba(75,9,45,.35);
+    }
+
+    .thumb{
+      width:78px;
+      min-width:78px;
+      height:78px;
+      border-radius:14px;
+      object-fit:cover;
+      border: 1px solid rgba(75,9,45,.18);
+      background: rgba(75,9,45,.06);
     }
 
     .itemTitle{
@@ -194,6 +207,16 @@
     }
 
     .hide{ display:none; }
+
+    .heroImg{
+      width:100%;
+      height:auto;
+      border-radius: 16px;
+      border: 1px solid rgba(75,9,45,.18);
+      box-shadow: 0 10px 22px rgba(0,0,0,.12);
+      margin: 10px 0 8px;
+      background: rgba(75,9,45,.06);
+    }
   </style>
 </head>
 
@@ -205,20 +228,24 @@
     </div>
 
     <div class="row">
-      <button id="viewTimer" class="navbtn">⏱ Timer</button>
-      <button id="viewPoses" class="navbtn">🧘 Posizioni</button>
+      <button id="viewTimer" class="navbtn">⏱ Routine</button>
+      <button id="viewPoses" class="navbtn">🧘 Esercizi</button>
     </div>
   </div>
 
   <div class="badgeRow">
     <div class="badge purple">10 MINUTI AL GIORNO</div>
-    <div class="badge cyan">INKL. BONUS • Routine + Timer</div>
+    <div class="badge cyan">BONUS • Routine + Timer</div>
   </div>
 
   <!-- TIMER VIEW -->
   <section id="timerView">
     <div class="card">
-      <h2>Routine (demo)</h2>
+      <h2>Routine</h2>
+
+      <!-- immagine routine -->
+      <img id="routineImg" class="heroImg" alt="Immagine routine" />
+
       <div class="row">
         <label class="mutedDark">
           Seleziona:
@@ -228,13 +255,18 @@
         <button id="pause" class="secondary">Pausa</button>
         <button id="reset" class="secondary">Reset</button>
       </div>
+
       <div class="mutedDark" style="margin-top:10px">
-        Questa è una demo. Quando vuoi, inseriamo le 100 posizioni del libro e creiamo routine complete.
+        Demo cliente: 1 routine + 3 esercizi. Poi aggiungiamo tutte le posizioni.
       </div>
     </div>
 
     <div class="card">
       <h2 id="poseName">Pronto</h2>
+
+      <!-- immagine esercizio corrente -->
+      <img id="poseImg" class="heroImg hide" alt="Immagine esercizio" />
+
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Scegli una routine e premi Start.</div>
 
@@ -248,18 +280,12 @@
   <!-- POSES VIEW -->
   <section id="posesView" class="hide">
     <div class="card">
-      <h2>Posizioni</h2>
+      <h2>Esercizi</h2>
       <div class="row">
-        <input id="search" placeholder="Cerca (es. schiena, spalle, relax)..." />
-        <select id="filterLevel">
-          <option value="">Tutti i livelli</option>
-          <option>Base</option>
-          <option>Intermedio</option>
-          <option>Avanzato</option>
-        </select>
+        <input id="search" placeholder="Cerca (es. schiena, torsione, coordinazione)..." />
       </div>
       <div class="mutedDark" style="margin-top:10px">
-        Apri una posizione e premi <b>⏱ Avvia timer</b> per partire con la durata consigliata.
+        Apri un esercizio e premi <b>⏱ Avvia timer</b>.
       </div>
     </div>
 
@@ -274,8 +300,9 @@
         </div>
       </div>
 
+      <img id="dImg" class="heroImg" alt="Immagine esercizio" />
+
       <div class="row" style="margin: 8px 0 12px">
-        <span class="pill" id="dLevel">—</span>
         <span class="pill" id="dTime">—</span>
         <span class="pill" id="dBenefits">—</span>
       </div>
@@ -285,116 +312,82 @@
 
       <h3 style="margin:14px 0 8px">Errori comuni</h3>
       <ul id="dErrors"></ul>
-
-      <div class="mutedDark" style="margin-top:12px">
-        (Opzionale) Qui possiamo aggiungere immagini o video per ogni posizione.
-      </div>
     </div>
   </section>
 
   <script>
-    // ====== DATI DEMO (poi li sostituiamo con le 100 posizioni) ======
+    // ====== DEMO: 3 ESERCIZI (con immagini) ======
     const POSES = [
       {
-        id: "respiro",
-        nome: "Respirazione consapevole",
-        livello: "Base",
-        durataConsigliataSec: 60,
-        benefici: "Calma mentale, focus, preparazione",
-        tags: ["relax","respiro","mindfulness"],
-        istruzioni: [
-          "Siediti comodo (anche su sedia), schiena lunga.",
-          "Inspira dal naso per 4 secondi.",
-          "Espira lentamente per 6 secondi, spalle morbide."
-        ],
-        erroriComuni: [
-          "Spalle tese e respiro alto nel petto.",
-          "Trattenere il fiato senza volerlo."
-        ]
-      },
-      {
         id: "gatto-mucca",
-        nome: "Gatto–Mucca (mobilità della colonna)",
-        livello: "Base",
+        nome: "Gatto–Mucca da seduti",
         durataConsigliataSec: 60,
-        benefici: "Riscaldamento dolce, mobilità della schiena",
-        tags: ["schiena","mobilità","warmup"],
+        benefici: "Mobilità della colonna e riscaldamento dolce della schiena.",
+        tags: ["schiena","mobilità","warmup","sedia"],
+        immagine: "img/gatto-mucca.png",
         istruzioni: [
-          "Seduto o in quadrupedia: allunga la colonna.",
-          "Inspira: apri il petto (Mucca).",
-          "Espira: arrotonda la schiena (Gatto)."
+          "Siediti eretto, piedi ben appoggiati a terra.",
+          "Inspira: apri il petto e inarca dolcemente (Mucca).",
+          "Espira: arrotonda la schiena e porta il mento leggermente verso il petto (Gatto).",
+          "Ripeti lentamente seguendo il respiro."
         ],
         erroriComuni: [
-          "Muovere solo il collo.",
-          "Inarcare troppo la zona lombare."
+          "Muovere solo il collo e non tutta la colonna.",
+          "Forzare troppo la zona lombare.",
+          "Trattenere il respiro."
         ]
       },
       {
-        id: "allungamento-spalle",
-        nome: "Allungamento spalle da seduti",
-        livello: "Base",
+        id: "torsione-seduta",
+        nome: "Torsione seduta (dx/sx)",
         durataConsigliataSec: 60,
-        benefici: "Rilassa spalle e collo",
-        tags: ["spalle","collo","relax"],
+        benefici: "Aumenta la mobilità della colonna e libera tensioni nella schiena.",
+        tags: ["schiena","torsione","mobilità","sedia"],
+        immagine: "img/torsione-seduta.png",
         istruzioni: [
-          "Siediti dritto, piedi a terra.",
-          "Porta una mano al gomito opposto e avvicina delicatamente al petto.",
-          "Respira e cambia lato."
+          "Siediti alto, spalle morbide, piedi a terra.",
+          "Ruota lentamente il busto verso destra senza forzare.",
+          "Mantieni 3–4 respiri, poi torna al centro.",
+          "Ripeti verso sinistra."
         ],
         erroriComuni: [
-          "Tirare troppo forte.",
-          "Spalle sollevate verso le orecchie."
+          "Forzare la rotazione con le braccia.",
+          "Collassare in avanti chiudendo il petto.",
+          "Sollevare le spalle verso le orecchie."
         ]
       },
       {
-        id: "torsione",
-        nome: "Torsione dolce da seduti",
-        livello: "Base",
-        durataConsigliataSec: 60,
-        benefici: "Mobilità della colonna, respiro più ampio",
-        tags: ["schiena","mobilità"],
+        id: "solleva-braccio-gamba-opposta",
+        nome: "Sollevamento braccio e gamba opposta",
+        durataConsigliataSec: 15,
+        benefici: "Migliora la coordinazione e rinforza braccia e gambe, favorendo l’equilibrio.",
+        tags: ["equilibrio","coordinazione","braccia","gambe","sedia"],
+        immagine: "img/solleva-braccio-gamba-opposta.png",
         istruzioni: [
-          "Siediti alto, mani sulle cosce.",
-          "Ruota il busto lentamente verso destra, senza forzare.",
-          "Mantieni 3–4 respiri e cambia lato."
+          "Siediti eretto sulla sedia.",
+          "Solleva contemporaneamente un braccio e la gamba opposta.",
+          "Mantieni la posizione per alcuni secondi.",
+          "Poi cambia lato."
         ],
         erroriComuni: [
-          "Forzare la rotazione.",
-          "Chiudere il petto e collassare in avanti."
-        ]
-      },
-      {
-        id: "rilassamento",
-        nome: "Rilassamento finale (Savasana da seduti)",
-        livello: "Base",
-        durataConsigliataSec: 120,
-        benefici: "Recupero, rilascio tensioni",
-        tags: ["relax","finale","recupero"],
-        istruzioni: [
-          "Siediti comodo, appoggia la schiena.",
-          "Rilassa mandibola e spalle.",
-          "Respira naturale e resta fermo."
-        ],
-        erroriComuni: [
-          "Muoversi continuamente.",
-          "Postura scomoda (aggiungi un cuscino se serve)."
+          "Sollevare braccio e gamba dello stesso lato invece che opposti.",
+          "Irrigidire le spalle.",
+          "Cambiare troppo in fretta senza stabilità."
         ]
       }
     ];
 
+    // ====== 1 ROUTINE DEMO: SCHIENA (3 ESERCIZI) ======
     const routines = [
-      { name: "10 min Mattina (Demo)", steps: [
-        { poseId:"respiro", sec:60 },
-        { poseId:"gatto-mucca", sec:60 },
-        { poseId:"allungamento-spalle", sec:60 },
-        { poseId:"torsione", sec:60 },
-        { poseId:"rilassamento", sec:360 }
-      ]},
-      { name: "8 min Schiena (Demo)", steps: [
-        { poseId:"gatto-mucca", sec:90 },
-        { poseId:"torsione", sec:90 },
-        { poseId:"rilassamento", sec:300 }
-      ]}
+      {
+        name: "Routine Schiena (Beta)",
+        image: "img/routine-schiena-beta.png",
+        steps: [
+          { poseId:"gatto-mucca", sec:90 },
+          { poseId:"torsione-seduta", sec:90 },
+          { poseId:"solleva-braccio-gamba-opposta", sec:60 }
+        ]
+      }
     ];
 
     // ====== NAV ======
@@ -410,7 +403,7 @@
       renderList();
     };
 
-    // ====== TIMER ======
+    // ====== ROUTINE SELECT ======
     const sel = document.getElementById("routine");
     routines.forEach((r,i)=> {
       const o=document.createElement("option");
@@ -419,6 +412,28 @@
       sel.appendChild(o);
     });
 
+    const $routineImg = document.getElementById("routineImg");
+    function updateRoutineImage(){
+      const r = routines[+sel.value];
+      $routineImg.src = r.image;
+      $routineImg.alt = `Immagine: ${r.name}`;
+    }
+    updateRoutineImage();
+    sel.onchange = () => {
+      stepIdx=0;
+      current=null;
+      paused=true;
+      if(interval){ clearInterval(interval); interval=null; }
+      $pose.textContent="Pronto";
+      $info.textContent="Premi Start.";
+      $timer.textContent="00:00";
+      $stepPill.textContent="Step 0/0";
+      $routinePill.textContent="—";
+      setPoseImage(null);
+      updateRoutineImage();
+    };
+
+    // ====== TIMER ======
     let interval=null, stepIdx=0, remaining=0, paused=true, current=null;
 
     const $timer=document.getElementById("timer");
@@ -426,6 +441,7 @@
     const $info=document.getElementById("poseInfo");
     const $stepPill=document.getElementById("stepPill");
     const $routinePill=document.getElementById("routinePill");
+    const $poseImg=document.getElementById("poseImg");
 
     function fmt(s){
       const m = Math.floor(s/60).toString().padStart(2,'0');
@@ -434,15 +450,27 @@
     }
     function getPoseById(id){ return POSES.find(p=>p.id===id); }
 
+    function setPoseImage(pose){
+      if(!pose || !pose.immagine){
+        $poseImg.classList.add("hide");
+        $poseImg.removeAttribute("src");
+        return;
+      }
+      $poseImg.src = pose.immagine;
+      $poseImg.alt = `Immagine: ${pose.nome}`;
+      $poseImg.classList.remove("hide");
+    }
+
     function loadStep(){
       const step = current.steps[stepIdx];
-      const pose = getPoseById(step.poseId) || {nome:"Posizione", benefici:""};
+      const pose = getPoseById(step.poseId) || {nome:"Esercizio", benefici:"", immagine:""};
       remaining = step.sec;
       $pose.textContent = pose.nome;
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Step ${stepIdx+1}/${current.steps.length}`;
       $routinePill.textContent = current.name || "—";
+      setPoseImage(pose);
     }
 
     function tick(){
@@ -456,9 +484,10 @@
           clearInterval(interval);
           interval=null;
           $pose.textContent="Routine completata ✅";
-          $info.textContent="Ottimo. Vuoi rifarla o sceglierne un’altra?";
+          $info.textContent="Ottimo. Vuoi rifarla?";
           $timer.textContent="00:00";
           $stepPill.textContent = `Step ${current.steps.length}/${current.steps.length}`;
+          setPoseImage(null);
 
           const done = JSON.parse(localStorage.getItem("yoga_done")||"[]");
           done.push({ts:Date.now(), routine:current.name});
@@ -489,23 +518,14 @@
       $timer.textContent="00:00";
       $stepPill.textContent="Step 0/0";
       $routinePill.textContent="—";
+      setPoseImage(null);
     };
 
-    sel.onchange = () => {
-      stepIdx=0;
-      current=null;
-      $pose.textContent="Pronto";
-      $info.textContent="Premi Start.";
-      $timer.textContent="00:00";
-      $stepPill.textContent="Step 0/0";
-      $routinePill.textContent="—";
-    };
-
-    // ====== POSIZIONI: LISTA + DETTAGLIO + TIMER SINGOLO ======
+    // ====== ESERCIZI: LISTA + DETTAGLIO + TIMER SINGOLO ======
     const $list = document.getElementById("poseList");
     const $search = document.getElementById("search");
-    const $filterLevel = document.getElementById("filterLevel");
     const $detail = document.getElementById("poseDetail");
+    const $dImg = document.getElementById("dImg");
     let selectedPoseId = null;
 
     function renderList(){
@@ -513,13 +533,10 @@
       $list.classList.remove("hide");
 
       const q = ($search.value||"").trim().toLowerCase();
-      const lvl = $filterLevel.value;
 
       const filtered = POSES.filter(p => {
         const text = (p.nome+" "+p.benefici+" "+(p.tags||[]).join(" ")).toLowerCase();
-        const okQ = !q || text.includes(q);
-        const okL = !lvl || p.livello === lvl;
-        return okQ && okL;
+        return !q || text.includes(q);
       });
 
       $list.innerHTML = "";
@@ -527,11 +544,13 @@
         const div = document.createElement("div");
         div.className = "item";
         div.innerHTML = `
-          <div class="itemTitle">${p.nome}</div>
-          <div class="mutedDark">${p.benefici}</div>
-          <div style="margin-top:10px" class="row">
-            <span class="pill">${p.livello}</span>
-            <span class="pill">~ ${Math.max(1, Math.round((p.durataConsigliataSec||60)/60))} min</span>
+          <img class="thumb" src="${p.immagine}" alt="thumb ${p.nome}">
+          <div>
+            <div class="itemTitle">${p.nome}</div>
+            <div class="mutedDark">${p.benefici}</div>
+            <div style="margin-top:10px" class="row">
+              <span class="pill">~ ${Math.max(1, Math.round((p.durataConsigliataSec||60)/60))} min</span>
+            </div>
           </div>
         `;
         div.onclick = () => showDetail(p.id);
@@ -552,9 +571,11 @@
       if(!p) return;
 
       document.getElementById("dName").textContent = p.nome;
-      document.getElementById("dLevel").textContent = p.livello;
       document.getElementById("dTime").textContent = `Durata consigliata: ${fmt(p.durataConsigliataSec||60)}`;
       document.getElementById("dBenefits").textContent = p.benefici;
+
+      $dImg.src = p.immagine;
+      $dImg.alt = `Immagine: ${p.nome}`;
 
       const steps = document.getElementById("dSteps");
       const errs = document.getElementById("dErrors");
@@ -589,14 +610,12 @@
 
       const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
 
-      // crea una "routine" con 1 sola posa
       current = { name: p.nome, steps: [{ poseId: p.id, sec: secs }] };
       stepIdx = 0;
       paused = false;
 
       loadStep();
 
-      // passa al timer e parte
       timerView.classList.remove("hide");
       posesView.classList.add("hide");
 
@@ -604,7 +623,6 @@
     };
 
     $search.oninput = renderList;
-    $filterLevel.onchange = renderList;
 
     // ====== PWA ======
     if("serviceWorker" in navigator){
@@ -613,4 +631,3 @@
   </script>
 </body>
 </html>
-
