@@ -81,16 +81,8 @@
       user-select:none;
     }
 
-    .badge.purple{
-      background: var(--accent2);
-      color: var(--white);
-    }
-
-    .badge.cyan{
-      background: var(--accent);
-      color: #0b0b0b;
-      border: 1px solid rgba(0,0,0,.15);
-    }
+    .badge.purple{ background: var(--accent2); color: var(--white); }
+    .badge.cyan{ background: var(--accent); color: #0b0b0b; border: 1px solid rgba(0,0,0,.15); }
 
     .navbtn{
       background: transparent;
@@ -112,10 +104,7 @@
       box-shadow: var(--shadow);
     }
 
-    .card h2{
-      margin:0 0 10px;
-      font-size:18px;
-    }
+    .card h2{ margin:0 0 10px; font-size:18px; }
 
     .mutedDark{
       opacity:.86;
@@ -167,10 +156,7 @@
       font-weight: 900;
     }
 
-    .list{
-      display:grid;
-      gap:10px;
-    }
+    .list{ display:grid; gap:10px; }
 
     .item{
       padding: 12px;
@@ -195,12 +181,10 @@
       background: rgba(75,9,45,.06);
     }
 
-    .itemTitle{
-      font-weight: 900;
-      margin-bottom: 4px;
-    }
+    .itemTitle{ font-weight: 900; margin-bottom: 4px; }
 
     ul{ margin: 10px 0 0 18px; }
+
     .hide{ display:none; }
 
     .heroImg{
@@ -213,13 +197,27 @@
       background: rgba(75,9,45,.06);
     }
 
-    .doneBox{
-      margin-top: 14px;
-      padding: 12px;
+    .smallTitle{ font-weight:900; margin-top:-6px; }
+
+    .sectionTitle{
+      font-weight: 900;
+      letter-spacing: .2px;
+      padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid rgba(75,9,45,.22);
-      background: rgba(75,9,45,.06);
+      background: rgba(75,9,45,.08);
+      border: 1px solid rgba(75,9,45,.18);
+      margin-top: 6px;
     }
+
+    .toggle{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      user-select:none;
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .toggle input{ width:auto; }
   </style>
 </head>
 
@@ -227,7 +225,7 @@
   <div class="topbar">
     <div>
       <h1>Stuhl-Yoga Bonus</h1>
-      <div class="sub">Auf dem Handy öffnen → Menü/Teilen → <b>„Zum Home-Bildschirm“</b>.</div>
+      <div class="sub">Am Handy öffnen → Browser-Menü → <b>„Zum Home-Bildschirm“</b>.</div>
     </div>
 
     <div class="row">
@@ -241,34 +239,51 @@
     <div class="badge cyan">BONUS • Routinen + Timer</div>
   </div>
 
-  <!-- TIMER VIEW -->
+  <!-- ROUTINEN VIEW -->
   <section id="timerView">
     <div class="card">
-      <h2>Routine</h2>
+      <div class="row" style="justify-content:space-between;align-items:flex-start;">
+        <h2 style="margin:0;">Routine auswählen</h2>
+        <div class="row">
+          <label class="toggle" title="Tick jede Sekunde (optional)">
+            <input type="checkbox" id="tickToggle">
+            🔊 Tick
+          </label>
+          <label class="toggle" title="Gong am Ende">
+            <input type="checkbox" id="gongToggle">
+            🔔 Gong
+          </label>
+        </div>
+      </div>
 
+      <!-- immagine routine -->
       <img id="routineImg" class="heroImg" alt="Routine Bild" />
 
-      <div class="row">
+      <div class="row" style="justify-content:space-between;">
         <label class="mutedDark">
           Auswahl:
           <select id="routine"></select>
         </label>
 
-        <button id="start">Start</button>
-        <button id="pause" class="secondary">Pause</button>
-        <button id="next" class="secondary">⏭ Weiter</button>
-        <button id="reset" class="secondary">Reset</button>
+        <div class="row">
+          <span class="pill" id="routineDurationPill">Dauer: —</span>
+        </div>
       </div>
 
-      <div class="mutedDark" style="margin-top:10px">
-        Demo: Routinen + Übungen mit Bildern. Danach können wir alle Übungen aus dem Buch hinzufügen.
+      <div class="row" style="margin-top:10px;">
+        <button id="start">Start</button>
+        <button id="pause" class="secondary">Pause</button>
+        <button id="skip" class="secondary">Weiter →</button>
+        <button id="reset" class="secondary">Reset</button>
       </div>
     </div>
 
     <div class="card">
       <h2 id="poseName">Bereit</h2>
 
-      <img id="poseImg" class="heroImg hide" alt="Übungsbild" />
+      <div class="mutedDark smallTitle" id="poseLabel">Übung: —</div>
+
+      <img id="poseImg" class="heroImg hide" alt="Übung Bild" />
 
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Wähle eine Routine und drücke Start.</div>
@@ -278,29 +293,36 @@
         <span class="pill" id="routinePill">—</span>
       </div>
 
-      <!-- Fine routine: JA/NEIN -->
-      <div id="afterDone" class="doneBox hide">
-        <div style="font-weight:900; margin-bottom:10px;">Noch eine Routine?</div>
-        <div class="row">
-          <button id="doneYes">Ja ✅</button>
-          <button id="doneNo" class="secondary">Nein</button>
-        </div>
-        <div class="mutedDark" style="margin-top:10px;">
-          Tipp: Du kannst auch in „Übungen“ einzelne Übungen auswählen.
-        </div>
+      <div class="row hide" id="doneActions" style="margin-top:12px">
+        <button id="again">Nochmal</button>
+        <button id="toExercises" class="secondary">Zu den Übungen</button>
       </div>
     </div>
   </section>
 
-  <!-- POSES VIEW -->
+  <!-- ÜBUNGEN VIEW -->
   <section id="posesView" class="hide">
     <div class="card">
-      <h2>Übungen</h2>
-      <div class="row">
-        <input id="search" placeholder="Suchen (z.B. Rücken, Atmung, Schulter)..." />
+      <div class="row" style="justify-content:space-between;align-items:flex-start;">
+        <h2 style="margin:0;">Übungen</h2>
+        <div class="row">
+          <label class="toggle" title="Tick jede Sekunde (optional)">
+            <input type="checkbox" id="tickToggle2">
+            🔊 Tick
+          </label>
+          <label class="toggle" title="Gong am Ende">
+            <input type="checkbox" id="gongToggle2">
+            🔔 Gong
+          </label>
+        </div>
       </div>
+
+      <div class="row" style="margin-top:10px;">
+        <input id="search" placeholder="Suchen (z.B. Rücken, Nacken, Atmung)..." />
+      </div>
+
       <div class="mutedDark" style="margin-top:10px">
-        Öffne eine Übung und drücke <b>⏱ Timer starten</b>.
+        Öffne eine Übung und drücke <b>„Timer starten“</b>.
       </div>
     </div>
 
@@ -315,7 +337,7 @@
         </div>
       </div>
 
-      <img id="dImg" class="heroImg" alt="Übungsbild" />
+      <img id="dImg" class="heroImg" alt="Übung Bild" />
 
       <div class="row" style="margin: 8px 0 12px">
         <span class="pill" id="dTime">—</span>
@@ -327,402 +349,477 @@
 
       <h3 style="margin:14px 0 8px">Häufige Fehler</h3>
       <ul id="dErrors"></ul>
+
+      <div id="singleTimerBox" class="card" style="margin:12px 0 0; padding:14px;">
+        <div class="row" style="justify-content:space-between;align-items:baseline;">
+          <div class="itemTitle" style="font-size:16px;">Übungs-Timer</div>
+          <span class="pill" id="singleStepPill">—</span>
+        </div>
+        <div class="big" id="singleTimer">00:00</div>
+        <div class="row">
+          <button id="singlePause" class="secondary">Pause</button>
+          <button id="singleReset" class="secondary">Reset</button>
+          <button id="singleNext">Nächste Übung →</button>
+        </div>
+      </div>
     </div>
   </section>
 
   <script>
-    // ====== GONG: semplice beep (non serve file audio) ======
+    // =========================
+    // AUDIO (WebAudio): tick + gong (senza file)
+    // =========================
     let audioCtx = null;
-    function playGong(){
+    function getAudioCtx(){
+      if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playTick(){
+      if(!settings.tick) return;
       try{
-        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.type = "sine";
-        o.frequency.setValueAtTime(880, audioCtx.currentTime);
-        g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.35);
-        o.connect(g); g.connect(audioCtx.destination);
+        const ctx = getAudioCtx();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "square";
+        o.frequency.value = 1200;
+        g.gain.value = 0.04;
+        o.connect(g); g.connect(ctx.destination);
         o.start();
-        o.stop(audioCtx.currentTime + 0.36);
+        o.stop(ctx.currentTime + 0.03);
       }catch(e){}
     }
 
-    // ====== DATI: ESERCIZI (TEDESCO) ======
-    // ⚠️ QUI DEVI METTERE I PERCORSI IMMAGINI CHE ESISTONO DAVVERO IN /img/
-    const POSES = [
-      // Rücken & Wirbelsäule
-      {
-        id: "katze-kuh-sitzen",
-        nome: "Katze–Kuh im Sitzen",
-        durataConsigliataSec: 60,
-        benefici: "Sanfte Mobilisation der Wirbelsäule und Aufwärmen für den Rücken.",
-        tags: ["rücken","wirbelsäule","mobilität","stuhl"],
-        immagine: "img/gatto-mucca-da-seduti.png",
-        istruzioni: [
-          "Aufrecht sitzen, Füße fest am Boden.",
-          "Einatmen: Brust öffnen, leicht ins Hohlkreuz (Kuh).",
-          "Ausatmen: Rücken rund machen, Kinn leicht zur Brust (Katze).",
-          "Langsam im Atemrhythmus wiederholen."
-        ],
-        erroriComuni: [
-          "Nur den Hals bewegen statt die ganze Wirbelsäule.",
-          "Im unteren Rücken zu stark ins Hohlkreuz gehen.",
-          "Die Atmung anhalten."
-        ]
-      },
-      {
-        id: "drehung-sitzen",
-        nome: "Sitzende Drehung (rechts/links)",
-        durataConsigliataSec: 60,
-        benefici: "Verbessert die Beweglichkeit der Wirbelsäule und löst Rückenspannungen.",
-        tags: ["rücken","drehung","mobilität","stuhl"],
-        immagine: "img/torsione-seduta-destra-sinistra.png",
-        istruzioni: [
-          "Aufrecht sitzen, Schultern locker, Füße am Boden.",
-          "Den Oberkörper langsam nach rechts drehen (ohne zu pressen).",
-          "3–4 Atemzüge halten, dann zur Mitte zurück.",
-          "Zur linken Seite wiederholen."
-        ],
-        erroriComuni: [
-          "Mit den Armen stark ziehen und die Drehung erzwingen.",
-          "Nach vorne zusammensacken und die Brust schließen.",
-          "Schultern hochziehen."
-        ]
-      },
-      {
-        id: "vorbeuge-sitzen",
-        nome: "Vorbeuge im Sitzen (langer Rücken)",
-        durataConsigliataSec: 60,
-        benefici: "Dehnt den Rücken sanft und beruhigt den Körper.",
-        tags: ["rücken","dehnung","stuhl"],
-        immagine: "img/piegamento-in-avanti-seduti-schiena-lunga.png",
-        istruzioni: [
-          "Aufrecht sitzen, Rücken lang.",
-          "Mit geradem Rücken langsam nach vorne beugen.",
-          "Nacken entspannt, Schultern weich.",
-          "3–5 Atemzüge halten und langsam zurückkommen."
-        ],
-        erroriComuni: [
-          "Rundrücken und zu stark nach unten fallen.",
-          "Schultern verspannen.",
-          "Ruckartig zurückkommen."
-        ]
-      },
-      {
-        id: "seitbeuge-sitzen",
-        nome: "Seitliche Rumpfdehnung im Sitzen",
-        durataConsigliataSec: 60,
-        benefici: "Öffnet die Flanken und entlastet den Rücken.",
-        tags: ["rücken","seite","dehnung","stuhl"],
-        immagine: "img/allungamento-laterale-busto-seduti.png",
-        istruzioni: [
-          "Aufrecht sitzen, Füße am Boden.",
-          "Einen Arm nach oben strecken.",
-          "Oberkörper sanft zur Seite neigen (ohne zu drehen).",
-          "Ruhig atmen, dann Seite wechseln."
-        ],
-        erroriComuni: [
-          "Nach vorne kippen statt zur Seite.",
-          "Schulter hochziehen.",
-          "Zu stark ziehen."
-        ]
-      },
-      {
-        id: "brustoeffnung-sitzen",
-        nome: "Brustöffnung im Sitzen (Arme nach hinten)",
-        durataConsigliataSec: 60,
-        benefici: "Öffnet den Brustkorb und verbessert die Haltung.",
-        tags: ["haltung","brust","schultern","stuhl"],
-        immagine: "img/apertura-petto-braccia-indietro.png",
-        istruzioni: [
-          "Aufrecht sitzen, Schultern locker.",
-          "Arme nach hinten führen (Hände ggf. verschränken).",
-          "Brustkorb sanft öffnen, tief einatmen.",
-          "3–5 Atemzüge halten."
-        ],
-        erroriComuni: [
-          "Schultern in die Ohren ziehen.",
-          "Ins Hohlkreuz fallen.",
-          "Zu stark nach hinten ziehen."
-        ]
-      },
+    function playGong(){
+      if(!settings.gong) return;
+      try{
+        const ctx = getAudioCtx();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(520, ctx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.9);
+        g.gain.setValueAtTime(0.0001, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.1);
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        o.stop(ctx.currentTime + 1.15);
+      }catch(e){}
+    }
 
-      // Atmung & Entspannung
+    // =========================
+    // SETTINGS (saved)
+    // =========================
+    const settings = {
+      tick: (localStorage.getItem("yoga_tick") || "0") === "1",
+      gong: (localStorage.getItem("yoga_gong") || "1") === "1",
+    };
+
+    function syncToggles(){
+      const t1 = document.getElementById("tickToggle");
+      const t2 = document.getElementById("tickToggle2");
+      const g1 = document.getElementById("gongToggle");
+      const g2 = document.getElementById("gongToggle2");
+      t1.checked = settings.tick; t2.checked = settings.tick;
+      g1.checked = settings.gong; g2.checked = settings.gong;
+    }
+
+    function attachToggleHandlers(){
+      const ids = ["tickToggle","tickToggle2"];
+      ids.forEach(id=>{
+        document.getElementById(id).addEventListener("change", (e)=>{
+          settings.tick = !!e.target.checked;
+          localStorage.setItem("yoga_tick", settings.tick ? "1" : "0");
+          syncToggles();
+        });
+      });
+
+      const ids2 = ["gongToggle","gongToggle2"];
+      ids2.forEach(id=>{
+        document.getElementById(id).addEventListener("change", (e)=>{
+          settings.gong = !!e.target.checked;
+          localStorage.setItem("yoga_gong", settings.gong ? "1" : "0");
+          syncToggles();
+        });
+      });
+    }
+
+    // =========================
+    // DATI: ÜBUNGEN (DE) + categoria
+    // =========================
+    const POSES = [
+      // ATMUNG & ENTSPANNUNG
       {
         id: "bauchatmung",
+        categoria: "Atmung & Entspannung",
         nome: "Bauchatmung (Zwerchfellatmung)",
         durataConsigliataSec: 60,
-        benefici: "Beruhigt das Nervensystem und reduziert Stress.",
+        benefici: "Beruhigt den Puls und unterstützt die Entspannung.",
         tags: ["atmung","entspannung","ruhe"],
         immagine: "img/respirazione-addominale.png",
         istruzioni: [
-          "Bequem sitzen, eine Hand auf den Bauch legen.",
-          "Durch die Nase einatmen: Bauch hebt sich.",
-          "Langsam ausatmen: Bauch senkt sich.",
-          "Ruhig und gleichmäßig wiederholen."
+          "Aufrecht sitzen, Schultern locker.",
+          "Durch die Nase einatmen – der Bauch hebt sich.",
+          "Langsam ausatmen – der Bauch senkt sich.",
+          "Ruhig und gleichmäßig weiteratmen."
         ],
         erroriComuni: [
           "Nur in die Brust atmen.",
-          "Schultern anspannen.",
+          "Schultern hochziehen.",
           "Zu schnell atmen."
         ]
       },
       {
         id: "atmung-4-6",
-        nome: "Atmung 4–6 (4 ein, 6 aus)",
+        categoria: "Atmung & Entspannung",
+        nome: "Atmung 4–6 (ein 4 / aus 6)",
         durataConsigliataSec: 60,
-        benefici: "Senkt die Anspannung und fördert innere Ruhe.",
-        tags: ["atmung","entspannung","ruhe"],
+        benefici: "Unterstützt Ruhe und hilft, Stress abzubauen.",
+        tags: ["atmung","stress","entspannung"],
         immagine: "img/respirazione-4-6.png",
         istruzioni: [
-          "4 Sekunden durch die Nase einatmen.",
-          "6 Sekunden langsam ausatmen.",
-          "Schultern weich lassen.",
-          "Mehrere Zyklen wiederholen."
+          "Durch die Nase 4 Sekunden einatmen.",
+          "Durch den Mund 6 Sekunden ausatmen.",
+          "Locker bleiben – besonders im Nacken und in den Schultern."
         ],
         erroriComuni: [
-          "Zu stark pressen.",
-          "Atem anhalten.",
-          "Zu schnell ausatmen."
+          "Atem anhalten ohne Absicht.",
+          "Zu stark pressen beim Ausatmen."
         ]
       },
       {
         id: "atmung-5-5",
-        nome: "Atmung 5–5 (Resonanzatmung)",
+        categoria: "Atmung & Entspannung",
+        nome: "Resonanzatmung 5–5",
         durataConsigliataSec: 60,
-        benefici: "Gleicht das Nervensystem aus und beruhigt den Puls.",
-        tags: ["atmung","entspannung","ruhe"],
+        benefici: "Gleichmäßiger Atemrhythmus, fördert innere Ruhe.",
+        tags: ["atmung","ruhe","fokus"],
         immagine: "img/respirazione-5-5.png",
         istruzioni: [
           "5 Sekunden einatmen.",
           "5 Sekunden ausatmen.",
-          "Gleichmäßiger Rhythmus ohne Stress.",
-          "Mehrere Zyklen wiederholen."
+          "Mehrere Atemzyklen ruhig wiederholen."
         ],
         erroriComuni: [
           "Zu schnell werden.",
-          "Schultern verspannen.",
-          "Unruhig sitzen."
+          "Schultern anspannen."
         ]
       },
       {
         id: "entspannung-sitzen",
+        categoria: "Atmung & Entspannung",
         nome: "Entspannendes Sitzen (Abschluss)",
         durataConsigliataSec: 120,
-        benefici: "Beruhigt Körper und Geist, ideal vor dem Schlaf.",
+        benefici: "Löst Spannung und unterstützt Erholung.",
         tags: ["entspannung","abschluss","ruhe"],
         immagine: "img/entspannendes-sitzen.png",
         istruzioni: [
-          "Bequem sitzen, Rücken anlehnen wenn möglich.",
-          "Kiefer und Schultern loslassen.",
-          "Atmung natürlich fließen lassen.",
-          "Ruhig sitzen und entspannen."
+          "Bequem sitzen, Rücken gut abstützen.",
+          "Kiefer und Schultern entspannen.",
+          "Atem natürlich fließen lassen."
         ],
         erroriComuni: [
-          "Unruhig bewegen.",
-          "Unbequeme Haltung (Kissen nutzen).",
-          "Zu flach atmen."
+          "Unruhig bleiben und ständig bewegen.",
+          "Unbequeme Position (Kissen nutzen, wenn nötig)."
         ]
       },
 
-      // Nacken & Schultern
+      // RÜCKEN & WIRBELSÄULE
       {
-        id: "nacken-seitneigung",
-        nome: "Nacken-Seitneigung",
+        id: "gatto-mucca",
+        categoria: "Rücken & Wirbelsäule",
+        nome: "Katze–Kuh im Sitzen",
         durataConsigliataSec: 60,
-        benefici: "Löst Verspannungen im Nacken und beruhigt.",
+        benefici: "Sanfte Mobilisation der Wirbelsäule, ideal zum Aufwärmen.",
+        tags: ["rücken","wirbelsäule","mobilität"],
+        immagine: "img/gatto-mucca-da-seduti.png",
+        istruzioni: [
+          "Aufrecht sitzen, Füße stabil am Boden.",
+          "Einatmen: Brust öffnen (Kuh).",
+          "Ausatmen: Rücken runden (Katze).",
+          "Ruhig im Atemrhythmus wiederholen."
+        ],
+        erroriComuni: [
+          "Nur den Nacken bewegen statt die ganze Wirbelsäule.",
+          "Zu stark ins Hohlkreuz gehen."
+        ]
+      },
+      {
+        id: "torsione-seduta",
+        categoria: "Rücken & Wirbelsäule",
+        nome: "Sitzende Drehung (rechts/links)",
+        durataConsigliataSec: 60,
+        benefici: "Verbessert die Beweglichkeit der Wirbelsäule und löst Spannung.",
+        tags: ["rücken","drehung","mobilität"],
+        immagine: "img/torsione-seduta-destra-sinistra.png",
+        istruzioni: [
+          "Aufrecht sitzen, Schultern locker.",
+          "Oberkörper langsam nach rechts drehen (ohne zu ziehen).",
+          "3–4 Atemzüge halten, zurück zur Mitte.",
+          "Links wiederholen."
+        ],
+        erroriComuni: [
+          "Zu stark mit den Armen ziehen.",
+          "Nach vorne zusammensacken."
+        ]
+      },
+      {
+        id: "vorbeuge",
+        categoria: "Rücken & Wirbelsäule",
+        nome: "Vorbeuge im Sitzen (langer Rücken)",
+        durataConsigliataSec: 60,
+        benefici: "Sanfte Dehnung für Rücken und Beinrückseite.",
+        tags: ["rücken","dehnung","sanft"],
+        immagine: "img/piegamento-in-avanti-seduti-schiena-lunga.png",
+        istruzioni: [
+          "Aufrecht sitzen, Rücken lang.",
+          "Langsam aus der Hüfte nach vorne neigen.",
+          "Nacken locker lassen, ruhig atmen.",
+          "Langsam wieder aufrichten."
+        ],
+        erroriComuni: [
+          "Rundrücken erzwingen.",
+          "Zu schnell in die Position fallen."
+        ]
+      },
+      {
+        id: "seitbeuge",
+        categoria: "Rücken & Wirbelsäule",
+        nome: "Seitliche Rumpfdehnung im Sitzen",
+        durataConsigliataSec: 60,
+        benefici: "Öffnet die Flanken, verbessert Beweglichkeit und Atmung.",
+        tags: ["rücken","seite","dehnung"],
+        immagine: "img/allungamento-laterale-busto-seduti.png",
+        istruzioni: [
+          "Aufrecht sitzen, einen Arm nach oben heben.",
+          "Oberkörper sanft zur Seite neigen.",
+          "Ruhig atmen, dann Seite wechseln."
+        ],
+        erroriComuni: [
+          "Schultern hochziehen.",
+          "Zu weit kippen statt sanft dehnen."
+        ]
+      },
+      {
+        id: "brustoeffnung",
+        categoria: "Rücken & Wirbelsäule",
+        nome: "Brustöffnung im Sitzen (Arme nach hinten)",
+        durataConsigliataSec: 60,
+        benefici: "Öffnet den Brustkorb, unterstützt eine aufrechte Haltung.",
+        tags: ["haltung","brust","schultern"],
+        immagine: "img/apertura-petto-braccia-indietro.png",
+        istruzioni: [
+          "Aufrecht sitzen, Schulterblätter sanft nach hinten.",
+          "Arme leicht nach hinten führen, Brust öffnen.",
+          "Ruhig atmen, Nacken weich."
+        ],
+        erroriComuni: [
+          "Ins Hohlkreuz fallen.",
+          "Schultern verspannen."
+        ]
+      },
+
+      // NACKEN & SCHULTERN
+      {
+        id: "nacken-seit",
+        categoria: "Nacken & Schultern",
+        nome: "Nacken-Dehnung seitlich",
+        durataConsigliataSec: 45,
+        benefici: "Entspannt Nacken und reduziert Schulterspannung.",
         tags: ["nacken","schultern","entspannung"],
         immagine: "img/inclinazione-laterale-collo.png",
         istruzioni: [
           "Aufrecht sitzen, Schultern locker.",
-          "Kopf sanft zur rechten Schulter neigen (nicht drehen).",
-          "2–3 Atemzüge halten, dann Seite wechseln."
+          "Kopf sanft zur Seite neigen (ohne zu ziehen).",
+          "Ruhig atmen, dann Seite wechseln."
         ],
         erroriComuni: [
-          "Schulter hochziehen.",
-          "Zu stark ziehen.",
-          "Kopf nach vorne kippen."
+          "Ziehen am Kopf mit der Hand.",
+          "Schultern hochziehen."
         ]
       },
       {
         id: "nacken-rotation",
-        nome: "Langsame Nackenrotation",
-        durataConsigliataSec: 60,
-        benefici: "Verbessert die Beweglichkeit im Nacken.",
+        categoria: "Nacken & Schultern",
+        nome: "Langsame Nacken-Rotation",
+        durataConsigliataSec: 45,
+        benefici: "Fördert Beweglichkeit und löst Verspannungen.",
         tags: ["nacken","mobilität"],
         immagine: "img/rotazioni-lente-del-collo.png",
         istruzioni: [
-          "Aufrecht sitzen.",
-          "Kopf langsam nach rechts drehen, ohne zu pressen.",
-          "Zur Mitte zurück und nach links drehen."
+          "Kinn leicht zur Brust, dann langsam zur Seite rollen.",
+          "Sehr kleine, kontrollierte Bewegung.",
+          "Ruhig weiteratmen."
         ],
         erroriComuni: [
-          "Ruckartige Bewegungen.",
-          "Schultern verspannen.",
-          "Zu weit drehen."
+          "Zu große Kreise machen.",
+          "Schmerzen ignorieren (dann stoppen)."
         ]
       },
       {
-        id: "schulter-kreise",
+        id: "schultern-kreise",
+        categoria: "Nacken & Schultern",
         nome: "Schulterkreisen",
-        durataConsigliataSec: 60,
-        benefici: "Lockert Schultern und verbessert die Haltung.",
-        tags: ["schultern","haltung","mobilität"],
+        durataConsigliataSec: 45,
+        benefici: "Mobilisiert Schultern und fördert Durchblutung.",
+        tags: ["schultern","mobilität"],
         immagine: "img/circonduzioni-spalle.png",
         istruzioni: [
-          "Schultern langsam nach oben, hinten, unten kreisen.",
-          "Dann Richtung wechseln.",
-          "Ruhig atmen."
+          "Schultern langsam nach hinten kreisen.",
+          "Dann Richtung wechseln (nach vorne).",
+          "Atmung ruhig halten."
         ],
         erroriComuni: [
           "Zu schnell kreisen.",
-          "Nacken verspannen.",
-          "Schultern hochziehen."
+          "Nacken anspannen."
         ]
       },
       {
-        id: "schulterblaetter",
+        id: "scapula-squeeze",
+        categoria: "Nacken & Schultern",
         nome: "Schulterblätter zusammenziehen",
-        durataConsigliataSec: 60,
-        benefici: "Stärkt die obere Rückenpartie und verbessert die Haltung.",
-        tags: ["rücken","haltung","schultern"],
+        durataConsigliataSec: 45,
+        benefici: "Verbessert Haltung und stärkt oberen Rücken.",
+        tags: ["haltung","rücken","schultern"],
         immagine: "img/spremi-scapole.png",
         istruzioni: [
-          "Aufrecht sitzen.",
+          "Aufrecht sitzen, Arme locker neben dem Körper.",
           "Schulterblätter sanft nach hinten/unten ziehen.",
-          "2 Sekunden halten, lösen und wiederholen."
+          "2 Sekunden halten, lösen – wiederholen."
         ],
         erroriComuni: [
-          "Ins Hohlkreuz fallen.",
           "Schultern zu den Ohren ziehen.",
-          "Zu stark pressen."
+          "Ins Hohlkreuz fallen."
         ]
       },
 
-      // Hüfte & Beine
+      // HÜFTE & BEINE
       {
         id: "bein-strecken",
+        categoria: "Hüfte & Beine",
         nome: "Beinstrecken im Sitzen",
-        durataConsigliataSec: 60,
-        benefici: "Kräftigt Oberschenkel und unterstützt die Mobilität.",
-        tags: ["beine","kraft","stuhl"],
+        durataConsigliataSec: 45,
+        benefici: "Kräftigt Oberschenkel und unterstützt Durchblutung.",
+        tags: ["beine","kraft","durchblutung"],
         immagine: "img/estensione-gamba-seduto.png",
         istruzioni: [
           "Aufrecht sitzen, Füße am Boden.",
-          "Ein Bein langsam nach vorne strecken.",
-          "Kurz halten, dann absetzen und Seite wechseln."
+          "Ein Bein langsam strecken, kurz halten.",
+          "Langsam absetzen, Seite wechseln."
         ],
         erroriComuni: [
-          "Zu schnell strecken.",
-          "Rücken rund machen.",
-          "Schultern verspannen."
+          "Zu ruckartig strecken.",
+          "Schultern anspannen."
         ]
       },
       {
         id: "knieheben",
+        categoria: "Hüfte & Beine",
         nome: "Knieheben im Sitzen (langsames Marschieren)",
-        durataConsigliataSec: 60,
-        benefici: "Fördert Durchblutung und stärkt Beine und Rumpf.",
-        tags: ["beine","kreislauf","stuhl"],
+        durataConsigliataSec: 45,
+        benefici: "Aktiviert Beine und Kreislauf, sehr seniorenfreundlich.",
+        tags: ["beine","kreislauf","sanft"],
         immagine: "img/sollevamento-ginocchio-seduto.png",
         istruzioni: [
-          "Aufrecht sitzen, Bauch leicht aktiv.",
           "Abwechselnd ein Knie anheben.",
-          "Ruhig atmen, langsam bewegen."
+          "Ruhig und kontrolliert, gleichmäßig atmen."
         ],
         erroriComuni: [
           "Zu schnell werden.",
-          "Nach hinten kippen.",
-          "Schultern verspannen."
+          "Sich nach hinten werfen."
         ]
       },
       {
-        id: "hueftoeffnung",
+        id: "huefte-oeffnen",
+        categoria: "Hüfte & Beine",
         nome: "Hüftöffnung im Sitzen",
         durataConsigliataSec: 60,
-        benefici: "Öffnet die Hüfte und entlastet den unteren Rücken.",
-        tags: ["hüfte","dehnung","stuhl"],
+        benefici: "Öffnet die Hüfte und entspannt den unteren Rücken.",
+        tags: ["hüfte","dehnung","sanft"],
         immagine: "img/figura-4-apertura-anca.png",
         istruzioni: [
-          "Einen Fuß auf das gegenüberliegende Knie legen.",
-          "Rücken lang, Brust offen.",
-          "Sanft nach vorne lehnen, ruhig atmen."
+          "Fußknöchel sanft auf das andere Knie legen.",
+          "Knie locker nach außen sinken lassen.",
+          "Ruhig atmen, dann Seite wechseln."
         ],
         erroriComuni: [
-          "Rücken rund machen.",
           "Zu stark drücken.",
-          "Schultern hochziehen."
+          "Schmerzen ignorieren."
         ]
       },
       {
-        id: "fussgelenke",
-        nome: "Fußgelenke kreisen",
-        durataConsigliataSec: 60,
-        benefici: "Fördert die Durchblutung und Beweglichkeit der Fußgelenke.",
-        tags: ["füße","gelenke","mobilität"],
+        id: "sprunggelenke",
+        categoria: "Hüfte & Beine",
+        nome: "Sprunggelenke kreisen",
+        durataConsigliataSec: 45,
+        benefici: "Fördert Beweglichkeit und Durchblutung in Füßen/Knöcheln.",
+        tags: ["füße","knöchel","durchblutung"],
         immagine: "img/rotazioni-delle-caviglie.png",
         istruzioni: [
           "Einen Fuß leicht anheben.",
-          "Fußgelenk langsam kreisen (beide Richtungen).",
-          "Dann Seite wechseln."
+          "Langsam im Kreis bewegen, Richtung wechseln.",
+          "Seite wechseln."
         ],
         erroriComuni: [
           "Zu schnell kreisen.",
-          "Knie verkrampfen.",
-          "Fuß nicht kontrollieren."
+          "Mit dem ganzen Bein wackeln statt im Knöchel."
         ]
       }
     ];
 
-    // ====== ROUTINEN (TEDESCO) ======
-    // Nota: durata 10 minuti circa (aggiusta i secondi come vuoi)
+    // =========================
+    // ROUTINEN
+    // =========================
     const routines = [
       {
-        name: "Routine: Atmung & Entspannung (10 Min.)",
+        name: "Atmung & Entspannung (10 Minuten)",
         image: "img/atmung-entspannung-10-minuten.png",
         steps: [
-          { poseId:"bauchatmung", sec:120 },
+          { poseId:"bauchatmung", sec:60 },
           { poseId:"atmung-4-6", sec:120 },
-          { poseId:"atmung-5-5", sec:120 },
+          { poseId:"atmung-5-5", sec:180 },
           { poseId:"entspannung-sitzen", sec:240 }
         ]
       },
       {
-        name: "Routine: Rücken & Wirbelsäule (10 Min.)",
+        name: "Rücken & Wirbelsäule (10 Minuten)",
         image: "img/routine-schiena-colonna.png",
         steps: [
-          { poseId:"katze-kuh-sitzen", sec:120 },
-          { poseId:"drehung-sitzen", sec:120 },
-          { poseId:"seitbeuge-sitzen", sec:120 },
-          { poseId:"brustoeffnung-sitzen", sec:120 },
-          { poseId:"vorbeuge-sitzen", sec:120 }
+          { poseId:"gatto-mucca", sec:120 },
+          { poseId:"torsione-seduta", sec:120 },
+          { poseId:"vorbeuge", sec:120 },
+          { poseId:"seitbeuge", sec:120 },
+          { poseId:"brustoeffnung", sec:120 }
         ]
       },
       {
-        name: "Routine: Nacken & Schultern (10 Min.)",
+        name: "Nacken & Schultern (10 Minuten)",
         image: "img/routine-collo-spalle.png",
         steps: [
-          { poseId:"nacken-seitneigung", sec:150 },
-          { poseId:"nacken-rotation", sec:150 },
-          { poseId:"schulter-kreise", sec:150 },
-          { poseId:"schulterblaetter", sec:150 }
+          { poseId:"nacken-seit", sec:120 },
+          { poseId:"nacken-rotation", sec:120 },
+          { poseId:"schultern-kreise", sec:120 },
+          { poseId:"scapula-squeeze", sec:240 }
         ]
       },
       {
-        name: "Routine: Hüfte & Beine (10 Min.)",
+        name: "Hüfte & Beine (10 Minuten)",
         image: "img/routine-huefte-beine.png",
         steps: [
           { poseId:"bein-strecken", sec:150 },
           { poseId:"knieheben", sec:150 },
-          { poseId:"hueftoeffnung", sec:150 },
-          { poseId:"fussgelenke", sec:150 }
+          { poseId:"huefte-oeffnen", sec:180 },
+          { poseId:"sprunggelenke", sec:120 }
         ]
       }
     ];
 
-    // ====== NAV ======
+    // =========================
+    // NAV
+    // =========================
     const timerView = document.getElementById("timerView");
     const posesView = document.getElementById("posesView");
     document.getElementById("viewTimer").onclick = () => {
@@ -735,7 +832,9 @@
       renderList();
     };
 
-    // ====== ROUTINE SELECT ======
+    // =========================
+    // ROUTINE SELECT
+    // =========================
     const sel = document.getElementById("routine");
     routines.forEach((r,i)=> {
       const o=document.createElement("option");
@@ -745,28 +844,31 @@
     });
 
     const $routineImg = document.getElementById("routineImg");
-    function updateRoutineImage(){
+    const $routineDurationPill = document.getElementById("routineDurationPill");
+    function routineTotalSeconds(r){ return (r.steps||[]).reduce((a,s)=>a+(s.sec||0),0); }
+
+    function updateRoutineUI(){
       const r = routines[+sel.value];
       $routineImg.src = r.image;
       $routineImg.alt = `Bild: ${r.name}`;
+      const total = routineTotalSeconds(r);
+      $routineDurationPill.textContent = `Dauer: ${Math.round(total/60)} min`;
     }
+    updateRoutineUI();
 
-    // ====== TIMER ======
+    // =========================
+    // TIMER (ROUTINE)
+    // =========================
     let interval=null, stepIdx=0, remaining=0, paused=true, current=null;
 
     const $timer=document.getElementById("timer");
     const $pose=document.getElementById("poseName");
+    const $poseLabel=document.getElementById("poseLabel");
     const $info=document.getElementById("poseInfo");
     const $stepPill=document.getElementById("stepPill");
     const $routinePill=document.getElementById("routinePill");
     const $poseImg=document.getElementById("poseImg");
-
-    const $afterDone = document.getElementById("afterDone");
-    const $doneYes = document.getElementById("doneYes");
-    const $doneNo = document.getElementById("doneNo");
-
-    function showAfterDone(){ $afterDone.classList.remove("hide"); }
-    function hideAfterDone(){ $afterDone.classList.add("hide"); }
+    const $doneActions=document.getElementById("doneActions");
 
     function fmt(s){
       const m = Math.floor(s/60).toString().padStart(2,'0');
@@ -790,78 +892,73 @@
       const step = current.steps[stepIdx];
       const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:""};
       remaining = step.sec;
+
       $pose.textContent = pose.nome;
+      $poseLabel.textContent = `Übung: ${pose.nome}`;
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Schritt ${stepIdx+1}/${current.steps.length}`;
       $routinePill.textContent = current.name || "—";
       setPoseImage(pose);
+
+      $doneActions.classList.add("hide");
     }
 
-    function goNextStep(manualSkip=false){
-      if(!current) return;
+    function finishRoutine(){
+      paused=true;
+      clearInterval(interval);
+      interval=null;
 
-      if(manualSkip) playGong();
+      $pose.textContent="Routine abgeschlossen ✅";
+      $poseLabel.textContent="Übung: —";
+      $info.textContent="Möchtest du weitermachen?";
+      $timer.textContent="00:00";
+      $stepPill.textContent = `Schritt ${current.steps.length}/${current.steps.length}`;
+      setPoseImage(null);
+      $doneActions.classList.remove("hide");
 
-      stepIdx++;
+      const done = JSON.parse(localStorage.getItem("yoga_done")||"[]");
+      done.push({ts:Date.now(), routine:current.name});
+      localStorage.setItem("yoga_done", JSON.stringify(done));
 
-      // Fine routine
-      if(stepIdx >= current.steps.length){
-        paused=true;
-        if(interval){ clearInterval(interval); interval=null; }
-
-        $pose.textContent="Routine fertig ✅";
-        $info.textContent="Möchtest du noch eine Routine machen?";
-        $timer.textContent="00:00";
-        $stepPill.textContent = `Schritt ${current.steps.length}/${current.steps.length}`;
-        $routinePill.textContent = current.name || "—";
-        setPoseImage(null);
-
-        const done = JSON.parse(localStorage.getItem("yoga_done")||"[]");
-        done.push({ts:Date.now(), routine:current.name});
-        localStorage.setItem("yoga_done", JSON.stringify(done));
-
-        showAfterDone();
-        return;
-      }
-
-      loadStep();
+      playGong();
     }
 
     function tick(){
       if(paused) return;
+
+      // tick sound ogni secondo (se ON)
+      playTick();
+
       remaining--;
       $timer.textContent = fmt(Math.max(0,remaining));
       if(remaining <= 0){
-        playGong();
-        goNextStep(false);
+        stepIdx++;
+        if(stepIdx >= current.steps.length){
+          finishRoutine();
+          return;
+        }
+        loadStep();
       }
     }
 
-    function resetTimerUI(){
+    function hardResetRoutineUI(){
       paused=true; stepIdx=0; current=null;
       if(interval){ clearInterval(interval); interval=null; }
       $pose.textContent="Bereit";
+      $poseLabel.textContent="Übung: —";
       $info.textContent="Wähle eine Routine und drücke Start.";
       $timer.textContent="00:00";
       $stepPill.textContent="Schritt 0/0";
       $routinePill.textContent="—";
       setPoseImage(null);
-      hideAfterDone();
+      $doneActions.classList.add("hide");
     }
 
-    // init
-    updateRoutineImage();
-    hideAfterDone();
+    document.getElementById("start").onclick = async () => {
+      // assicura che audio parta dopo un tap
+      try{ await getAudioCtx().resume(); }catch(e){}
 
-    sel.onchange = () => {
-      updateRoutineImage();
-      resetTimerUI();
-      $info.textContent="Drücke Start.";
-    };
-
-    document.getElementById("start").onclick = () => {
-      hideAfterDone();
       if(!current){
         current = routines[+sel.value];
         stepIdx=0;
@@ -873,35 +970,55 @@
 
     document.getElementById("pause").onclick = () => paused=true;
 
-    document.getElementById("next").onclick = () => {
+    document.getElementById("skip").onclick = () => {
       if(!current) return;
-      remaining = 0;
-      $timer.textContent = "00:00";
-      goNextStep(true);
+      stepIdx++;
+      if(stepIdx >= current.steps.length){
+        finishRoutine();
+        return;
+      }
+      loadStep();
     };
 
-    document.getElementById("reset").onclick = () => resetTimerUI();
+    document.getElementById("reset").onclick = () => hardResetRoutineUI();
 
-    $doneYes.onclick = () => {
-      // torna su in alto e resetta, così scelgono un'altra routine
-      resetTimerUI();
-      window.scrollTo({top:0, behavior:"smooth"});
+    document.getElementById("again").onclick = async () => {
+      try{ await getAudioCtx().resume(); }catch(e){}
+      const selected = current ? current : routines[+sel.value];
+      hardResetRoutineUI();
+      current = selected;
+      stepIdx = 0;
+      loadStep();
+      paused = false;
+      if(!interval) interval=setInterval(tick,1000);
     };
 
-    $doneNo.onclick = () => {
-      // porta alla lista esercizi (utile)
-      hideAfterDone();
+    document.getElementById("toExercises").onclick = () => {
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
     };
 
-    // ====== ESERCIZI: LISTA + DETTAGLIO + TIMER SINGOLO ======
+    sel.onchange = () => {
+      updateRoutineUI();
+      hardResetRoutineUI();
+    };
+
+    // =========================
+    // ÜBUNGEN: LISTA + CATEGORIE
+    // =========================
     const $list = document.getElementById("poseList");
     const $search = document.getElementById("search");
     const $detail = document.getElementById("poseDetail");
     const $dImg = document.getElementById("dImg");
     let selectedPoseId = null;
+
+    const CATEGORY_ORDER = [
+      "Atmung & Entspannung",
+      "Rücken & Wirbelsäule",
+      "Nacken & Schultern",
+      "Hüfte & Beine"
+    ];
 
     function renderList(){
       $detail.classList.add("hide");
@@ -909,22 +1026,39 @@
 
       const q = ($search.value||"").trim().toLowerCase();
 
-      const filtered = POSES.filter(p => {
-        const text = (p.nome+" "+p.benefici+" "+(p.tags||[]).join(" ")).toLowerCase();
-        return !q || text.includes(q);
-      });
+      const filtered = POSES
+        .filter(p => {
+          const text = (p.nome+" "+p.benefici+" "+(p.tags||[]).join(" ")+" "+(p.categoria||"")).toLowerCase();
+          return !q || text.includes(q);
+        })
+        .sort((a,b)=>{
+          const ca = CATEGORY_ORDER.indexOf(a.categoria||"");
+          const cb = CATEGORY_ORDER.indexOf(b.categoria||"");
+          if(ca !== cb) return ca - cb;
+          return a.nome.localeCompare(b.nome, "de");
+        });
 
       $list.innerHTML = "";
+
+      let lastCat = null;
       filtered.forEach(p => {
+        if(p.categoria !== lastCat){
+          const cat = document.createElement("div");
+          cat.className = "sectionTitle";
+          cat.textContent = p.categoria || "Übungen";
+          $list.appendChild(cat);
+          lastCat = p.categoria;
+        }
+
         const div = document.createElement("div");
         div.className = "item";
         div.innerHTML = `
-          <img class="thumb" src="${p.immagine}" alt="Vorschau ${p.nome}">
+          <img class="thumb" src="${p.immagine}" alt="thumb ${p.nome}">
           <div>
             <div class="itemTitle">${p.nome}</div>
             <div class="mutedDark">${p.benefici}</div>
             <div style="margin-top:10px" class="row">
-              <span class="pill">~ ${Math.max(1, Math.round((p.durataConsigliataSec||60)/60))} Min</span>
+              <span class="pill">~ ${Math.max(1, Math.round((p.durataConsigliataSec||60)/60))} min</span>
             </div>
           </div>
         `;
@@ -935,7 +1069,7 @@
       if(filtered.length === 0){
         const empty = document.createElement("div");
         empty.className="card";
-        empty.innerHTML = `<div class="mutedDark">Keine Ergebnisse. Bitte anderes Wort versuchen.</div>`;
+        empty.innerHTML = `<div class="mutedDark">Keine Treffer. Bitte andere Suchwörter probieren.</div>`;
         $list.appendChild(empty);
       }
     }
@@ -968,6 +1102,8 @@
         errs.appendChild(li);
       });
 
+      resetSingleTimerUI();
+
       $list.classList.add("hide");
       $detail.classList.remove("hide");
       window.scrollTo({top:0, behavior:"smooth"});
@@ -976,31 +1112,85 @@
     document.getElementById("back").onclick = () => {
       $detail.classList.add("hide");
       $list.classList.remove("hide");
-    };
-
-    document.getElementById("startPoseTimer").onclick = () => {
-      if(!selectedPoseId) return;
-      const p = getPoseById(selectedPoseId);
-      if(!p) return;
-
-      const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
-
-      current = { name: p.nome, steps: [{ poseId: p.id, sec: secs }] };
-      stepIdx = 0;
-      paused = false;
-
-      hideAfterDone();
-      loadStep();
-
-      timerView.classList.remove("hide");
-      posesView.classList.add("hide");
-
-      if(!interval) interval = setInterval(tick, 1000);
+      resetSingleTimerUI();
     };
 
     $search.oninput = renderList;
 
-    // ====== PWA ======
+    // =========================
+    // SINGLE TIMER (INLINE)
+    // =========================
+    let singleInterval = null;
+    let singleRemaining = 0;
+
+    const $singleTimer = document.getElementById("singleTimer");
+    const $singleStepPill = document.getElementById("singleStepPill");
+
+    function resetSingleTimerUI(){
+      if(singleInterval){
+        clearInterval(singleInterval);
+        singleInterval = null;
+      }
+      singleRemaining = 0;
+      $singleTimer.textContent = "00:00";
+      $singleStepPill.textContent = "—";
+    }
+
+    function startSingleTimer(secs){
+      singleRemaining = secs;
+      $singleTimer.textContent = fmt(Math.max(0, singleRemaining));
+      $singleStepPill.textContent = "Übung läuft";
+
+      if(singleInterval) clearInterval(singleInterval);
+      singleInterval = setInterval(() => {
+        // tick ogni secondo (se ON)
+        playTick();
+
+        singleRemaining--;
+        $singleTimer.textContent = fmt(Math.max(0, singleRemaining));
+
+        if(singleRemaining <= 0){
+          clearInterval(singleInterval);
+          singleInterval = null;
+          $singleStepPill.textContent = "Fertig ✅";
+          playGong();
+        }
+      }, 1000);
+    }
+
+    document.getElementById("startPoseTimer").onclick = async () => {
+      try{ await getAudioCtx().resume(); }catch(e){}
+      if(!selectedPoseId) return;
+      const p = getPoseById(selectedPoseId);
+      if(!p) return;
+      const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
+      startSingleTimer(secs);
+    };
+
+    document.getElementById("singlePause").onclick = () => {
+      if(singleInterval){
+        clearInterval(singleInterval);
+        singleInterval = null;
+        $singleStepPill.textContent = "Pausiert";
+      }
+    };
+
+    document.getElementById("singleReset").onclick = () => resetSingleTimerUI();
+
+    document.getElementById("singleNext").onclick = () => {
+      resetSingleTimerUI();
+      $detail.classList.add("hide");
+      $list.classList.remove("hide");
+      window.scrollTo({top:0, behavior:"smooth"});
+    };
+
+    // =========================
+    // INIT
+    // =========================
+    syncToggles();
+    attachToggleHandlers();
+
+    // PWA
     if("serviceWorker" in navigator){
       navigator.serviceWorker.register("/sw.js").catch(()=>{});
     }
