@@ -1,6 +1,7 @@
 {
-  "name": "Stuhl Yoga Bonus",
-  "short_name": "Stuhl Yoga",
+  "name": "Stuhl-Yoga Bonus",
+  "short_name": "Stuhl-Yoga",
+  "description": "Stuhl-Yoga Bonus: 10-Minuten-Routinen und Übungen mit Timer.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -11,4 +12,3 @@
     { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
-
