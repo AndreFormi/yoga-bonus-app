@@ -1,4 +1,4 @@
-const CACHE_NAME = "stuhl-yoga-v6";
+const CACHE_NAME = "stuhl-yoga-v7";
 
 const ASSETS = [
   "/",
@@ -12,26 +12,26 @@ const ASSETS = [
   "/img/routine-collo-spalle.png",
   "/img/routine-huefte-beine.png",
 
-  // RESPIRO & RELAX (attenzione: questi 3 nomi sono ancora italiani nei tuoi file)
+  // RESPIRO & RELAX
   "/img/respirazione-addominale.png",
   "/img/respirazione-4-6.png",
   "/img/respirazione-5-5.png",
   "/img/entspannendes-sitzen.png",
 
-  // SCHIENA & COLONNA (nomi italiani)
+  // SCHIENA & COLONNA
   "/img/gatto-mucca-da-seduti.png",
   "/img/torsione-seduta-destra-sinistra.png",
   "/img/piegamento-in-avanti-seduti-schiena-lunga.png",
   "/img/allungamento-laterale-busto-seduti.png",
   "/img/apertura-petto-braccia-indietro.png",
 
-  // COLLO & SPALLE (nomi italiani)
+  // COLLO & SPALLE
   "/img/inclinazione-laterale-collo.png",
   "/img/rotazioni-lente-del-collo.png",
   "/img/circonduzioni-spalle.png",
   "/img/spremi-scapole.png",
 
-  // HÜFTE & BEINE (nomi italiani + uno con spazio!)
+  // HÜFTE & BEINE
   "/img/estensione-gamba-seduto.png",
   "/img/sollevamento-ginocchio-seduto.png",
   "/img/figura-4-apertura-anca.png",
@@ -65,7 +65,7 @@ self.addEventListener("fetch", (event) => {
   // Solo same-origin (fonts esterni vanno di rete)
   if (url.origin !== location.origin) return;
 
-  // Per HTML: prova rete prima (così aggiorna più facilmente), fallback cache
+  // Per HTML: rete prima, fallback cache
   if (req.headers.get("accept")?.includes("text/html")) {
     event.respondWith(
       fetch(req)
