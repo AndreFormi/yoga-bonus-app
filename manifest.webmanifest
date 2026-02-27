@@ -1,14 +1,22 @@
 {
-  "name": "Stuhl-Yoga Bonus",
+  "name": "Stuhl-Yoga App",
   "short_name": "Stuhl-Yoga",
-  "description": "Stuhl-Yoga Bonus: 10-Minuten-Routinen und Übungen mit Timer.",
-  "start_url": "/",
-  "scope": "/",
+  "description": "Stuhl-Yoga App mit 10-Minuten-Routinen, einzelnen Übungen und integriertem Timer. Ideal für Mobilität, Entspannung und tägliche Bewegung.",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#F28402",
   "theme_color": "#F28402",
+  "orientation": "portrait",
   "icons": [
-    { "src": "/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
