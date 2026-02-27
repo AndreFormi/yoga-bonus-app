@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#F28402" />
 
-  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="manifest" href="./manifest.webmanifest">
 
   <!-- PWA / Icons -->
-  <link rel="icon" href="/img/icon-192.png">
-  <link rel="apple-touch-icon" href="/img/icon-192.png">
+  <link rel="icon" href="./img/icon-192.png">
+  <link rel="apple-touch-icon" href="./img/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -40,7 +40,7 @@
     .topbar{
       display:flex;
       justify-content:space-between;
-      align-items:center;
+      align-items:flex-start;
       gap:10px;
       flex-wrap:wrap;
       margin-bottom:6px;
@@ -135,12 +135,6 @@
       border: 1px solid rgba(75,9,45,.28);
     }
 
-    button.ghost{
-      background: rgba(75,9,45,.10);
-      color: var(--text);
-      border: 1px solid rgba(75,9,45,.22);
-    }
-
     input, select{
       padding: 10px 12px;
       border-radius: 14px;
@@ -194,8 +188,6 @@
       background: rgba(75,9,45,.06);
     }
 
-    .itemTitle{ font-weight: 900; margin-bottom: 4px; }
-
     ul{ margin: 10px 0 0 18px; }
 
     .hide{ display:none; }
@@ -245,24 +237,32 @@
       margin: 6px 0 0 18px;
     }
 
-    .installBar{
+    /* Install box */
+    .installCard{
+      padding:14px;
       margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
     }
-    .installNote{
-      color: var(--muted);
-      font-size:13px;
-      line-height:1.35;
+    .installIcon{
+      width:64px;
+      height:64px;
+      border-radius:18px;
+      display:block;
+    }
+    .installTitle{
+      font-weight:900;
+      font-size:16px;
+      margin-bottom:2px;
     }
 
-    .softDivider{
-      height:1px;
-      background: rgba(249,246,243,.35);
-      margin: 10px 0 0;
-      border-radius: 99px;
+    /* Small helper row under timers */
+    .timerToggles{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid rgba(75,9,45,.12);
     }
   </style>
 </head>
@@ -272,15 +272,26 @@
     <div>
       <h1>Stuhl-Yoga für Senioren</h1>
 
-      <!-- INSTALL CTA (fisso qui, non sparisce) -->
-      <div class="installBar">
-        <button id="installBtn" class="ghost">📲 App installieren</button>
-        <div class="installNote" id="installNote">
-          Wenn du auf dem Handy bist, kannst du die App installieren und offline nutzen.
+      <!-- INSTALL BOX (al posto della frase Home Screen) -->
+      <div class="card installCard" id="installCard">
+        <div class="row" style="align-items:center;">
+          <img src="./img/icon-192.png" alt="Stuhl-Yoga Icon" class="installIcon">
+          <div>
+            <div class="installTitle">App installieren</div>
+            <div class="mutedDark" id="installHint">
+              Tippe auf „Installieren“, um die App auf dem Handy zu speichern.
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button id="installBtn" class="hide">⬇️ Installieren</button>
+        </div>
+
+        <div class="mutedDark" id="installFallback" style="margin-top:10px; display:none;">
+          Wenn „Installieren“ nicht verfügbar ist: öffne den Link bitte in <b>Chrome</b> (Android) oder <b>Safari</b> (iPhone).
         </div>
       </div>
-
-      <div class="softDivider"></div>
     </div>
 
     <div class="row">
@@ -299,6 +310,16 @@
     <div class="card" id="routineTop">
       <div class="row" style="justify-content:space-between;align-items:flex-start;">
         <h2 style="margin:0;">Routine auswählen</h2>
+        <div class="row">
+          <label class="toggle" title="Tick jede Sekunde (optional)">
+            <input type="checkbox" id="tickToggle">
+            🔊 Tick
+          </label>
+          <label class="toggle" title="Gong am Ende">
+            <input type="checkbox" id="gongToggle">
+            🔔 Gong
+          </label>
+        </div>
       </div>
 
       <img id="routineImg" class="heroImg" alt="Routine Bild" />
@@ -323,7 +344,6 @@
       </div>
     </div>
 
-    <!-- ROUTINE TIMER CARD -->
     <div class="card" id="routineTimerCard">
       <h2 id="poseName">Bereit</h2>
 
@@ -331,18 +351,6 @@
 
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Wähle eine Routine und drücke Start.</div>
-
-      <!-- Tick/Gong sotto al timer (come volevi tu) -->
-      <div class="row" style="margin-top:10px;">
-        <label class="toggle" title="Tick jede Sekunde (optional)">
-          <input type="checkbox" id="tickToggle">
-          🔊 Tick
-        </label>
-        <label class="toggle" title="Gong am Ende">
-          <input type="checkbox" id="gongToggle">
-          🔔 Gong
-        </label>
-      </div>
 
       <!-- Kurz-Anleitung in Routine (come "Übungen") -->
       <div id="poseMiniBox" class="miniBox hide">
@@ -355,10 +363,22 @@
         <span class="pill" id="routinePill">—</span>
       </div>
 
+      <!-- Toggles anche sotto al timer -->
+      <div class="timerToggles">
+        <label class="toggle" title="Tick jede Sekunde (optional)">
+          <input type="checkbox" id="tickToggle3">
+          🔊 Tick
+        </label>
+        <label class="toggle" title="Gong am Ende">
+          <input type="checkbox" id="gongToggle3">
+          🔔 Gong
+        </label>
+      </div>
+
       <div class="row hide" id="doneActions" style="margin-top:12px">
         <button id="again">Nochmal</button>
         <button id="toExercises" class="secondary">Zu den Übungen</button>
-        <button id="otherRoutine" class="secondary">Zu den Routinen</button>
+        <button id="otherRoutine" class="secondary">Andere Routine</button>
       </div>
     </div>
   </section>
@@ -368,6 +388,16 @@
     <div class="card">
       <div class="row" style="justify-content:space-between;align-items:flex-start;">
         <h2 style="margin:0;">Übungen</h2>
+        <div class="row">
+          <label class="toggle" title="Tick jede Sekunde (optional)">
+            <input type="checkbox" id="tickToggle2">
+            🔊 Tick
+          </label>
+          <label class="toggle" title="Gong am Ende">
+            <input type="checkbox" id="gongToggle2">
+            🔔 Gong
+          </label>
+        </div>
       </div>
 
       <div class="row" style="margin-top:10px;">
@@ -406,21 +436,21 @@
       <!-- Single timer resta QUI -->
       <div id="singleTimerBox" class="card" style="margin:12px 0 0; padding:14px;">
         <div class="row" style="justify-content:space-between;align-items:baseline;">
-          <div class="itemTitle" style="font-size:16px;">Übungs-Timer</div>
+          <div class="installTitle">Übungs-Timer</div>
           <span class="pill" id="singleStepPill">—</span>
         </div>
 
         <div class="big" id="singleTimer">00:00</div>
         <div class="mutedDark" id="singleHint" style="margin-top:6px;">—</div>
 
-        <!-- Tick/Gong sotto al timer singolo -->
-        <div class="row" style="margin-top:10px;">
+        <!-- Toggles anche sotto al single timer -->
+        <div class="timerToggles">
           <label class="toggle" title="Tick jede Sekunde (optional)">
-            <input type="checkbox" id="tickToggle2">
+            <input type="checkbox" id="tickToggle4">
             🔊 Tick
           </label>
           <label class="toggle" title="Gong am Ende">
-            <input type="checkbox" id="gongToggle2">
+            <input type="checkbox" id="gongToggle4">
             🔔 Gong
           </label>
         </div>
@@ -436,56 +466,12 @@
 
   <script>
     // =========================
-    // INSTALL (beforeinstallprompt)
+    // Smooth scroll helper
     // =========================
-    let deferredPrompt = null;
-    const installBtn = document.getElementById("installBtn");
-    const installNote = document.getElementById("installNote");
-
-    function setInstallUI(state){
-      // state: "ready" | "installed" | "unavailable"
-      if(state === "ready"){
-        installBtn.disabled = false;
-        installBtn.classList.remove("hide");
-        installNote.textContent = "Tippe auf „App installieren“, um sie auf deinem Handy zu speichern.";
-        return;
-      }
-      if(state === "installed"){
-        installBtn.disabled = true;
-        installNote.textContent = "✅ App ist installiert (oder Installation nicht nötig).";
-        return;
-      }
-      // unavailable
-      installBtn.disabled = true;
-      installNote.textContent = "Installation ist in diesem Browser/Modus nicht verfügbar. (Du kannst die App trotzdem nutzen.)";
+    function scrollToEl(el){
+      if(!el) return;
+      el.scrollIntoView({ behavior:"smooth", block:"start" });
     }
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      setInstallUI("ready");
-    });
-
-    window.addEventListener("appinstalled", () => {
-      deferredPrompt = null;
-      setInstallUI("installed");
-    });
-
-    installBtn.addEventListener("click", async () => {
-      try{
-        if(!deferredPrompt){
-          setInstallUI("unavailable");
-          return;
-        }
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        deferredPrompt = null;
-      }catch(e){}
-    });
-
-    // fallback: se non arriva beforeinstallprompt
-    // (rimane visibile, ma disabilitato)
-    setInstallUI("unavailable");
 
     // =========================
     // AUDIO (WebAudio): tick + gong (senza file)
@@ -540,35 +526,38 @@
     };
 
     function syncToggles(){
-      const t1 = document.getElementById("tickToggle");
-      const t2 = document.getElementById("tickToggle2");
-      const g1 = document.getElementById("gongToggle");
-      const g2 = document.getElementById("gongToggle2");
-      t1.checked = settings.tick; t2.checked = settings.tick;
-      g1.checked = settings.gong; g2.checked = settings.gong;
+      const tickIds = ["tickToggle","tickToggle2","tickToggle3","tickToggle4"];
+      const gongIds = ["gongToggle","gongToggle2","gongToggle3","gongToggle4"];
+      tickIds.forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.checked = settings.tick;
+      });
+      gongIds.forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.checked = settings.gong;
+      });
     }
 
     function attachToggleHandlers(){
-      ["tickToggle","tickToggle2"].forEach(id=>{
-        document.getElementById(id).addEventListener("change", (e)=>{
+      const tickIds = ["tickToggle","tickToggle2","tickToggle3","tickToggle4"];
+      tickIds.forEach(id=>{
+        const el = document.getElementById(id);
+        el?.addEventListener("change", (e)=>{
           settings.tick = !!e.target.checked;
           localStorage.setItem("yoga_tick", settings.tick ? "1" : "0");
           syncToggles();
         });
       });
 
-      ["gongToggle","gongToggle2"].forEach(id=>{
-        document.getElementById(id).addEventListener("change", (e)=>{
+      const gongIds = ["gongToggle","gongToggle2","gongToggle3","gongToggle4"];
+      gongIds.forEach(id=>{
+        const el = document.getElementById(id);
+        el?.addEventListener("change", (e)=>{
           settings.gong = !!e.target.checked;
           localStorage.setItem("yoga_gong", settings.gong ? "1" : "0");
           syncToggles();
         });
       });
-    }
-
-    function scrollToEl(el){
-      if(!el) return;
-      el.scrollIntoView({behavior:"smooth", block:"start"});
     }
 
     // =========================
@@ -946,18 +935,15 @@
     // =========================
     const timerView = document.getElementById("timerView");
     const posesView = document.getElementById("posesView");
-
     document.getElementById("viewTimer").onclick = () => {
       timerView.classList.remove("hide");
       posesView.classList.add("hide");
-      scrollToEl(document.getElementById("routineTop"));
     };
-
     document.getElementById("viewPoses").onclick = () => {
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
-      scrollToEl(document.body);
+      scrollToEl(posesView);
     };
 
     // =========================
@@ -1000,6 +986,8 @@
     const $poseMiniBox=document.getElementById("poseMiniBox");
     const $poseMiniSteps=document.getElementById("poseMiniSteps");
 
+    const $routineTimerCard = document.getElementById("routineTimerCard");
+
     function fmt(s){
       const m = Math.floor(s/60).toString().padStart(2,'0');
       const sec = (s%60).toString().padStart(2,'0');
@@ -1039,7 +1027,7 @@
       const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:"", istruzioni:[]};
       remaining = step.sec;
 
-      $pose.textContent = pose.nome;     // SOLO 1 volta
+      $pose.textContent = pose.nome; // una sola volta
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Schritt ${stepIdx+1}/${current.steps.length}`;
@@ -1112,8 +1100,8 @@
       paused=false;
       if(!interval) interval=setInterval(tick,1000);
 
-      // SLIDE: porta l’utente al timer
-      scrollToEl(document.getElementById("routineTimerCard"));
+      // SLIDE al timer
+      scrollToEl($routineTimerCard);
     };
 
     document.getElementById("pause").onclick = () => paused=true;
@@ -1126,7 +1114,7 @@
         return;
       }
       loadStep();
-      scrollToEl(document.getElementById("routineTimerCard"));
+      scrollToEl($routineTimerCard);
     };
 
     document.getElementById("prev").onclick = () => {
@@ -1134,13 +1122,10 @@
       if(stepIdx <= 0) return;
       stepIdx--;
       loadStep();
-      scrollToEl(document.getElementById("routineTimerCard"));
+      scrollToEl($routineTimerCard);
     };
 
-    document.getElementById("reset").onclick = () => {
-      hardResetRoutineUI();
-      scrollToEl(document.getElementById("routineTop"));
-    };
+    document.getElementById("reset").onclick = () => hardResetRoutineUI();
 
     document.getElementById("again").onclick = async () => {
       try{ await getAudioCtx().resume(); }catch(e){}
@@ -1151,26 +1136,24 @@
       loadStep();
       paused = false;
       if(!interval) interval=setInterval(tick,1000);
-      scrollToEl(document.getElementById("routineTimerCard"));
+      scrollToEl($routineTimerCard);
     };
 
     document.getElementById("toExercises").onclick = () => {
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
-      scrollToEl(document.body);
+      scrollToEl(posesView);
     };
 
     document.getElementById("otherRoutine").onclick = () => {
-      // torna al menu routinen + reset UI
       hardResetRoutineUI();
-      scrollToEl(document.getElementById("routineTop"));
+      document.getElementById("routineTop").scrollIntoView({behavior:"smooth", block:"start"});
     };
 
     sel.onchange = () => {
       updateRoutineUI();
       hardResetRoutineUI();
-      scrollToEl(document.getElementById("routineTop"));
     };
 
     // =========================
@@ -1180,6 +1163,7 @@
     const $search = document.getElementById("search");
     const $detail = document.getElementById("poseDetail");
     const $dImg = document.getElementById("dImg");
+    const $singleTimerBox = document.getElementById("singleTimerBox");
     let selectedPoseId = null;
 
     const CATEGORY_ORDER = [
@@ -1224,7 +1208,7 @@
         div.innerHTML = `
           <img class="thumb" src="${p.immagine}" alt="thumb ${p.nome}">
           <div>
-            <div class="itemTitle">${p.nome}</div>
+            <div style="font-weight:900;margin-bottom:4px;">${p.nome}</div>
             <div class="mutedDark">${p.benefici}</div>
             <div style="margin-top:10px" class="row">
               <span class="pill">~ ${Math.max(1, Math.round((p.durataConsigliataSec||60)/60))} min</span>
@@ -1275,14 +1259,14 @@
 
       $list.classList.add("hide");
       $detail.classList.remove("hide");
-      scrollToEl($detail);
+      window.scrollTo({top:0, behavior:"smooth"});
     }
 
     document.getElementById("back").onclick = () => {
       $detail.classList.add("hide");
       $list.classList.remove("hide");
       resetSingleTimerUI();
-      scrollToEl(document.body);
+      window.scrollTo({top:0, behavior:"smooth"});
     };
 
     $search.oninput = renderList;
@@ -1296,7 +1280,6 @@
     const $singleTimer = document.getElementById("singleTimer");
     const $singleStepPill = document.getElementById("singleStepPill");
     const $singleHint = document.getElementById("singleHint");
-    const $singleBox = document.getElementById("singleTimerBox");
 
     function resetSingleTimerUI(){
       if(singleInterval){
@@ -1340,8 +1323,8 @@
       const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
       startSingleTimer(secs);
 
-      // SLIDE: porta l’utente sul timer singolo
-      scrollToEl($singleBox);
+      // SLIDE al timer box (così non devono scrollare a mano)
+      scrollToEl($singleTimerBox);
     };
 
     document.getElementById("singlePause").onclick = () => {
@@ -1359,8 +1342,37 @@
       resetSingleTimerUI();
       $detail.classList.add("hide");
       $list.classList.remove("hide");
-      scrollToEl(document.body);
+      window.scrollTo({top:0, behavior:"smooth"});
     };
+
+    // =========================
+    // INSTALL (persistente) - Android/Chrome
+    // =========================
+    let deferredPrompt = null;
+    const installBtn = document.getElementById("installBtn");
+    const installFallback = document.getElementById("installFallback");
+
+    // Se non arriva mai beforeinstallprompt, mostriamo un hint
+    setTimeout(() => {
+      if(!deferredPrompt && installBtn.classList.contains("hide")){
+        installFallback.style.display = "block";
+      }
+    }, 2500);
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.classList.remove("hide"); // resta visibile finché vuoi tu
+      installFallback.style.display = "none";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.classList.add("hide");
+    });
 
     // =========================
     // INIT
@@ -1368,13 +1380,10 @@
     syncToggles();
     attachToggleHandlers();
 
-    // PWA
+    // PWA (percorsi relativi per evitare problemi in sottocartella)
     if("serviceWorker" in navigator){
-      navigator.serviceWorker.register("/sw.js").catch(()=>{});
+      navigator.serviceWorker.register("./sw.js").catch(()=>{});
     }
-
-    // prima render
-    renderList();
   </script>
 </body>
 </html>
