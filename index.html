@@ -4,7 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#F28402" />
+
   <link rel="manifest" href="/manifest.webmanifest">
+
+  <!-- PWA / Icons -->
+  <link rel="icon" href="/img/icon-192.png">
+  <link rel="apple-touch-icon" href="/img/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
   <title>Stuhl-Yoga App</title>
 
@@ -197,8 +204,6 @@
       background: rgba(75,9,45,.06);
     }
 
-    .smallTitle{ font-weight:900; margin-top:-6px; }
-
     .sectionTitle{
       font-weight: 900;
       letter-spacing: .2px;
@@ -218,6 +223,21 @@
       font-size: 13px;
     }
     .toggle input{ width:auto; }
+
+    .miniBox{
+      margin: 10px 0 0;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(75,9,45,.18);
+      background: rgba(255,255,255,.68);
+    }
+    .miniBox h3{
+      margin:0 0 6px;
+      font-size:14px;
+    }
+    .miniBox ul{
+      margin: 6px 0 0 18px;
+    }
   </style>
 </head>
 
@@ -236,12 +256,12 @@
 
   <div class="badgeRow">
     <div class="badge purple">10 MINUTEN AM TAG</div>
-    <div class="badge cyan">BONUS • Routinen + Timer</div>
+    <div class="badge cyan">Routinen + Timer</div>
   </div>
 
   <!-- ROUTINEN VIEW -->
   <section id="timerView">
-    <div class="card">
+    <div class="card" id="routineTop">
       <div class="row" style="justify-content:space-between;align-items:flex-start;">
         <h2 style="margin:0;">Routine auswählen</h2>
         <div class="row">
@@ -256,7 +276,6 @@
         </div>
       </div>
 
-      <!-- immagine routine -->
       <img id="routineImg" class="heroImg" alt="Routine Bild" />
 
       <div class="row" style="justify-content:space-between;">
@@ -273,6 +292,7 @@
       <div class="row" style="margin-top:10px;">
         <button id="start">Start</button>
         <button id="pause" class="secondary">Pause</button>
+        <button id="prev" class="secondary">← Zurück</button>
         <button id="skip" class="secondary">Weiter →</button>
         <button id="reset" class="secondary">Reset</button>
       </div>
@@ -281,12 +301,16 @@
     <div class="card">
       <h2 id="poseName">Bereit</h2>
 
-      <div class="mutedDark smallTitle" id="poseLabel">Übung: —</div>
-
       <img id="poseImg" class="heroImg hide" alt="Übung Bild" />
 
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Wähle eine Routine und drücke Start.</div>
+
+      <!-- Kurz-Anleitung in Routine (come "Übungen") -->
+      <div id="poseMiniBox" class="miniBox hide">
+        <h3>Anleitung (kurz)</h3>
+        <ul id="poseMiniSteps"></ul>
+      </div>
 
       <div style="margin-top:12px" class="row">
         <span class="pill" id="stepPill">Schritt 0/0</span>
@@ -296,6 +320,7 @@
       <div class="row hide" id="doneActions" style="margin-top:12px">
         <button id="again">Nochmal</button>
         <button id="toExercises" class="secondary">Zu den Übungen</button>
+        <button id="otherRoutine" class="secondary">Andere Routine</button>
       </div>
     </div>
   </section>
@@ -350,16 +375,18 @@
       <h3 style="margin:14px 0 8px">Häufige Fehler</h3>
       <ul id="dErrors"></ul>
 
+      <!-- Single timer resta QUI (non va sotto la routine) -->
       <div id="singleTimerBox" class="card" style="margin:12px 0 0; padding:14px;">
         <div class="row" style="justify-content:space-between;align-items:baseline;">
           <div class="itemTitle" style="font-size:16px;">Übungs-Timer</div>
           <span class="pill" id="singleStepPill">—</span>
         </div>
         <div class="big" id="singleTimer">00:00</div>
-        <div class="row">
+        <div class="mutedDark" id="singleHint" style="margin-top:6px;">—</div>
+        <div class="row" style="margin-top:10px;">
           <button id="singlePause" class="secondary">Pause</button>
           <button id="singleReset" class="secondary">Reset</button>
-          <button id="singleNext">Nächste Übung →</button>
+          <button id="singleNext">Noch eine Übung →</button>
         </div>
       </div>
     </div>
@@ -428,8 +455,7 @@
     }
 
     function attachToggleHandlers(){
-      const ids = ["tickToggle","tickToggle2"];
-      ids.forEach(id=>{
+      ["tickToggle","tickToggle2"].forEach(id=>{
         document.getElementById(id).addEventListener("change", (e)=>{
           settings.tick = !!e.target.checked;
           localStorage.setItem("yoga_tick", settings.tick ? "1" : "0");
@@ -437,8 +463,7 @@
         });
       });
 
-      const ids2 = ["gongToggle","gongToggle2"];
-      ids2.forEach(id=>{
+      ["gongToggle","gongToggle2"].forEach(id=>{
         document.getElementById(id).addEventListener("change", (e)=>{
           settings.gong = !!e.target.checked;
           localStorage.setItem("yoga_gong", settings.gong ? "1" : "0");
@@ -863,12 +888,14 @@
 
     const $timer=document.getElementById("timer");
     const $pose=document.getElementById("poseName");
-    const $poseLabel=document.getElementById("poseLabel");
     const $info=document.getElementById("poseInfo");
     const $stepPill=document.getElementById("stepPill");
     const $routinePill=document.getElementById("routinePill");
     const $poseImg=document.getElementById("poseImg");
     const $doneActions=document.getElementById("doneActions");
+
+    const $poseMiniBox=document.getElementById("poseMiniBox");
+    const $poseMiniSteps=document.getElementById("poseMiniSteps");
 
     function fmt(s){
       const m = Math.floor(s/60).toString().padStart(2,'0');
@@ -888,18 +915,35 @@
       $poseImg.classList.remove("hide");
     }
 
+    function setMiniInstructions(pose){
+      if(!pose || !pose.istruzioni || pose.istruzioni.length === 0){
+        $poseMiniBox.classList.add("hide");
+        $poseMiniSteps.innerHTML = "";
+        return;
+      }
+      // mostriamo max 3 bullet (pulito, “come Übungen”)
+      const items = pose.istruzioni.slice(0,3);
+      $poseMiniSteps.innerHTML = "";
+      items.forEach(t=>{
+        const li=document.createElement("li");
+        li.textContent=t;
+        $poseMiniSteps.appendChild(li);
+      });
+      $poseMiniBox.classList.remove("hide");
+    }
+
     function loadStep(){
       const step = current.steps[stepIdx];
-      const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:""};
+      const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:"", istruzioni:[]};
       remaining = step.sec;
 
-      $pose.textContent = pose.nome;
-      $poseLabel.textContent = `Übung: ${pose.nome}`;
+      $pose.textContent = pose.nome;              // SOLO una volta
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Schritt ${stepIdx+1}/${current.steps.length}`;
       $routinePill.textContent = current.name || "—";
       setPoseImage(pose);
+      setMiniInstructions(pose);
 
       $doneActions.classList.add("hide");
     }
@@ -910,11 +954,13 @@
       interval=null;
 
       $pose.textContent="Routine abgeschlossen ✅";
-      $poseLabel.textContent="Übung: —";
-      $info.textContent="Möchtest du weitermachen?";
+      $info.textContent="Was möchtest du als Nächstes machen?";
       $timer.textContent="00:00";
       $stepPill.textContent = `Schritt ${current.steps.length}/${current.steps.length}`;
+      $routinePill.textContent = current.name || "—";
       setPoseImage(null);
+      setMiniInstructions(null);
+
       $doneActions.classList.remove("hide");
 
       const done = JSON.parse(localStorage.getItem("yoga_done")||"[]");
@@ -926,8 +972,6 @@
 
     function tick(){
       if(paused) return;
-
-      // tick sound ogni secondo (se ON)
       playTick();
 
       remaining--;
@@ -946,17 +990,16 @@
       paused=true; stepIdx=0; current=null;
       if(interval){ clearInterval(interval); interval=null; }
       $pose.textContent="Bereit";
-      $poseLabel.textContent="Übung: —";
       $info.textContent="Wähle eine Routine und drücke Start.";
       $timer.textContent="00:00";
       $stepPill.textContent="Schritt 0/0";
       $routinePill.textContent="—";
       setPoseImage(null);
+      setMiniInstructions(null);
       $doneActions.classList.add("hide");
     }
 
     document.getElementById("start").onclick = async () => {
-      // assicura che audio parta dopo un tap
       try{ await getAudioCtx().resume(); }catch(e){}
 
       if(!current){
@@ -980,6 +1023,14 @@
       loadStep();
     };
 
+    // NUOVO: indietro
+    document.getElementById("prev").onclick = () => {
+      if(!current) return;
+      if(stepIdx <= 0) return;
+      stepIdx--;
+      loadStep();
+    };
+
     document.getElementById("reset").onclick = () => hardResetRoutineUI();
 
     document.getElementById("again").onclick = async () => {
@@ -997,6 +1048,12 @@
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
+    };
+
+    // NUOVO: altre routine -> torna in cima e resetta UI (senza cambiare select)
+    document.getElementById("otherRoutine").onclick = () => {
+      hardResetRoutineUI();
+      document.getElementById("routineTop").scrollIntoView({behavior:"smooth", block:"start"});
     };
 
     sel.onchange = () => {
@@ -1125,6 +1182,7 @@
 
     const $singleTimer = document.getElementById("singleTimer");
     const $singleStepPill = document.getElementById("singleStepPill");
+    const $singleHint = document.getElementById("singleHint");
 
     function resetSingleTimerUI(){
       if(singleInterval){
@@ -1134,16 +1192,17 @@
       singleRemaining = 0;
       $singleTimer.textContent = "00:00";
       $singleStepPill.textContent = "—";
+      $singleHint.textContent = "—";
     }
 
     function startSingleTimer(secs){
       singleRemaining = secs;
       $singleTimer.textContent = fmt(Math.max(0, singleRemaining));
       $singleStepPill.textContent = "Übung läuft";
+      $singleHint.textContent = "Du kannst danach direkt eine weitere Übung auswählen.";
 
       if(singleInterval) clearInterval(singleInterval);
       singleInterval = setInterval(() => {
-        // tick ogni secondo (se ON)
         playTick();
 
         singleRemaining--;
@@ -1153,6 +1212,7 @@
           clearInterval(singleInterval);
           singleInterval = null;
           $singleStepPill.textContent = "Fertig ✅";
+          $singleHint.textContent = "Möchtest du eine weitere Übung machen?";
           playGong();
         }
       }, 1000);
@@ -1172,11 +1232,13 @@
         clearInterval(singleInterval);
         singleInterval = null;
         $singleStepPill.textContent = "Pausiert";
+        $singleHint.textContent = "Weiter mit „Timer starten“ (oder Reset).";
       }
     };
 
     document.getElementById("singleReset").onclick = () => resetSingleTimerUI();
 
+    // “Noch eine Übung” -> torna alla lista Übungen (come vuoi tu)
     document.getElementById("singleNext").onclick = () => {
       resetSingleTimerUI();
       $detail.classList.add("hide");
