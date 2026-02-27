@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <title>Stuhl-Yoga App</title>
+  <title>Stuhl-Yoga für Senioren</title>
 
   <style>
     :root{
@@ -135,6 +135,12 @@
       border: 1px solid rgba(75,9,45,.28);
     }
 
+    button.ghost{
+      background: rgba(75,9,45,.10);
+      color: var(--text);
+      border: 1px solid rgba(75,9,45,.22);
+    }
+
     input, select{
       padding: 10px 12px;
       border-radius: 14px;
@@ -238,14 +244,43 @@
     .miniBox ul{
       margin: 6px 0 0 18px;
     }
+
+    .installBar{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .installNote{
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .softDivider{
+      height:1px;
+      background: rgba(249,246,243,.35);
+      margin: 10px 0 0;
+      border-radius: 99px;
+    }
   </style>
 </head>
 
 <body>
   <div class="topbar">
     <div>
-      <h1>Stuhl-Yoga App</h1>
-      <div class="sub">Am Handy öffnen → Browser-Menü → <b>„Zum Home-Bildschirm“</b>.</div>
+      <h1>Stuhl-Yoga für Senioren</h1>
+
+      <!-- INSTALL CTA (fisso qui, non sparisce) -->
+      <div class="installBar">
+        <button id="installBtn" class="ghost">📲 App installieren</button>
+        <div class="installNote" id="installNote">
+          Wenn du auf dem Handy bist, kannst du die App installieren und offline nutzen.
+        </div>
+      </div>
+
+      <div class="softDivider"></div>
     </div>
 
     <div class="row">
@@ -264,16 +299,6 @@
     <div class="card" id="routineTop">
       <div class="row" style="justify-content:space-between;align-items:flex-start;">
         <h2 style="margin:0;">Routine auswählen</h2>
-        <div class="row">
-          <label class="toggle" title="Tick jede Sekunde (optional)">
-            <input type="checkbox" id="tickToggle">
-            🔊 Tick
-          </label>
-          <label class="toggle" title="Gong am Ende">
-            <input type="checkbox" id="gongToggle">
-            🔔 Gong
-          </label>
-        </div>
       </div>
 
       <img id="routineImg" class="heroImg" alt="Routine Bild" />
@@ -298,13 +323,26 @@
       </div>
     </div>
 
-    <div class="card">
+    <!-- ROUTINE TIMER CARD -->
+    <div class="card" id="routineTimerCard">
       <h2 id="poseName">Bereit</h2>
 
       <img id="poseImg" class="heroImg hide" alt="Übung Bild" />
 
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Wähle eine Routine und drücke Start.</div>
+
+      <!-- Tick/Gong sotto al timer (come volevi tu) -->
+      <div class="row" style="margin-top:10px;">
+        <label class="toggle" title="Tick jede Sekunde (optional)">
+          <input type="checkbox" id="tickToggle">
+          🔊 Tick
+        </label>
+        <label class="toggle" title="Gong am Ende">
+          <input type="checkbox" id="gongToggle">
+          🔔 Gong
+        </label>
+      </div>
 
       <!-- Kurz-Anleitung in Routine (come "Übungen") -->
       <div id="poseMiniBox" class="miniBox hide">
@@ -320,7 +358,7 @@
       <div class="row hide" id="doneActions" style="margin-top:12px">
         <button id="again">Nochmal</button>
         <button id="toExercises" class="secondary">Zu den Übungen</button>
-        <button id="otherRoutine" class="secondary">Andere Routine</button>
+        <button id="otherRoutine" class="secondary">Zu den Routinen</button>
       </div>
     </div>
   </section>
@@ -330,16 +368,6 @@
     <div class="card">
       <div class="row" style="justify-content:space-between;align-items:flex-start;">
         <h2 style="margin:0;">Übungen</h2>
-        <div class="row">
-          <label class="toggle" title="Tick jede Sekunde (optional)">
-            <input type="checkbox" id="tickToggle2">
-            🔊 Tick
-          </label>
-          <label class="toggle" title="Gong am Ende">
-            <input type="checkbox" id="gongToggle2">
-            🔔 Gong
-          </label>
-        </div>
       </div>
 
       <div class="row" style="margin-top:10px;">
@@ -375,14 +403,28 @@
       <h3 style="margin:14px 0 8px">Häufige Fehler</h3>
       <ul id="dErrors"></ul>
 
-      <!-- Single timer resta QUI (non va sotto la routine) -->
+      <!-- Single timer resta QUI -->
       <div id="singleTimerBox" class="card" style="margin:12px 0 0; padding:14px;">
         <div class="row" style="justify-content:space-between;align-items:baseline;">
           <div class="itemTitle" style="font-size:16px;">Übungs-Timer</div>
           <span class="pill" id="singleStepPill">—</span>
         </div>
+
         <div class="big" id="singleTimer">00:00</div>
         <div class="mutedDark" id="singleHint" style="margin-top:6px;">—</div>
+
+        <!-- Tick/Gong sotto al timer singolo -->
+        <div class="row" style="margin-top:10px;">
+          <label class="toggle" title="Tick jede Sekunde (optional)">
+            <input type="checkbox" id="tickToggle2">
+            🔊 Tick
+          </label>
+          <label class="toggle" title="Gong am Ende">
+            <input type="checkbox" id="gongToggle2">
+            🔔 Gong
+          </label>
+        </div>
+
         <div class="row" style="margin-top:10px;">
           <button id="singlePause" class="secondary">Pause</button>
           <button id="singleReset" class="secondary">Reset</button>
@@ -393,6 +435,58 @@
   </section>
 
   <script>
+    // =========================
+    // INSTALL (beforeinstallprompt)
+    // =========================
+    let deferredPrompt = null;
+    const installBtn = document.getElementById("installBtn");
+    const installNote = document.getElementById("installNote");
+
+    function setInstallUI(state){
+      // state: "ready" | "installed" | "unavailable"
+      if(state === "ready"){
+        installBtn.disabled = false;
+        installBtn.classList.remove("hide");
+        installNote.textContent = "Tippe auf „App installieren“, um sie auf deinem Handy zu speichern.";
+        return;
+      }
+      if(state === "installed"){
+        installBtn.disabled = true;
+        installNote.textContent = "✅ App ist installiert (oder Installation nicht nötig).";
+        return;
+      }
+      // unavailable
+      installBtn.disabled = true;
+      installNote.textContent = "Installation ist in diesem Browser/Modus nicht verfügbar. (Du kannst die App trotzdem nutzen.)";
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      setInstallUI("ready");
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredPrompt = null;
+      setInstallUI("installed");
+    });
+
+    installBtn.addEventListener("click", async () => {
+      try{
+        if(!deferredPrompt){
+          setInstallUI("unavailable");
+          return;
+        }
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      }catch(e){}
+    });
+
+    // fallback: se non arriva beforeinstallprompt
+    // (rimane visibile, ma disabilitato)
+    setInstallUI("unavailable");
+
     // =========================
     // AUDIO (WebAudio): tick + gong (senza file)
     // =========================
@@ -470,6 +564,11 @@
           syncToggles();
         });
       });
+    }
+
+    function scrollToEl(el){
+      if(!el) return;
+      el.scrollIntoView({behavior:"smooth", block:"start"});
     }
 
     // =========================
@@ -847,14 +946,18 @@
     // =========================
     const timerView = document.getElementById("timerView");
     const posesView = document.getElementById("posesView");
+
     document.getElementById("viewTimer").onclick = () => {
       timerView.classList.remove("hide");
       posesView.classList.add("hide");
+      scrollToEl(document.getElementById("routineTop"));
     };
+
     document.getElementById("viewPoses").onclick = () => {
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
+      scrollToEl(document.body);
     };
 
     // =========================
@@ -921,7 +1024,6 @@
         $poseMiniSteps.innerHTML = "";
         return;
       }
-      // mostriamo max 3 bullet (pulito, “come Übungen”)
       const items = pose.istruzioni.slice(0,3);
       $poseMiniSteps.innerHTML = "";
       items.forEach(t=>{
@@ -937,7 +1039,7 @@
       const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:"", istruzioni:[]};
       remaining = step.sec;
 
-      $pose.textContent = pose.nome;              // SOLO una volta
+      $pose.textContent = pose.nome;     // SOLO 1 volta
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Schritt ${stepIdx+1}/${current.steps.length}`;
@@ -1009,6 +1111,9 @@
       }
       paused=false;
       if(!interval) interval=setInterval(tick,1000);
+
+      // SLIDE: porta l’utente al timer
+      scrollToEl(document.getElementById("routineTimerCard"));
     };
 
     document.getElementById("pause").onclick = () => paused=true;
@@ -1021,17 +1126,21 @@
         return;
       }
       loadStep();
+      scrollToEl(document.getElementById("routineTimerCard"));
     };
 
-    // NUOVO: indietro
     document.getElementById("prev").onclick = () => {
       if(!current) return;
       if(stepIdx <= 0) return;
       stepIdx--;
       loadStep();
+      scrollToEl(document.getElementById("routineTimerCard"));
     };
 
-    document.getElementById("reset").onclick = () => hardResetRoutineUI();
+    document.getElementById("reset").onclick = () => {
+      hardResetRoutineUI();
+      scrollToEl(document.getElementById("routineTop"));
+    };
 
     document.getElementById("again").onclick = async () => {
       try{ await getAudioCtx().resume(); }catch(e){}
@@ -1042,23 +1151,26 @@
       loadStep();
       paused = false;
       if(!interval) interval=setInterval(tick,1000);
+      scrollToEl(document.getElementById("routineTimerCard"));
     };
 
     document.getElementById("toExercises").onclick = () => {
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
+      scrollToEl(document.body);
     };
 
-    // NUOVO: altre routine -> torna in cima e resetta UI (senza cambiare select)
     document.getElementById("otherRoutine").onclick = () => {
+      // torna al menu routinen + reset UI
       hardResetRoutineUI();
-      document.getElementById("routineTop").scrollIntoView({behavior:"smooth", block:"start"});
+      scrollToEl(document.getElementById("routineTop"));
     };
 
     sel.onchange = () => {
       updateRoutineUI();
       hardResetRoutineUI();
+      scrollToEl(document.getElementById("routineTop"));
     };
 
     // =========================
@@ -1163,13 +1275,14 @@
 
       $list.classList.add("hide");
       $detail.classList.remove("hide");
-      window.scrollTo({top:0, behavior:"smooth"});
+      scrollToEl($detail);
     }
 
     document.getElementById("back").onclick = () => {
       $detail.classList.add("hide");
       $list.classList.remove("hide");
       resetSingleTimerUI();
+      scrollToEl(document.body);
     };
 
     $search.oninput = renderList;
@@ -1183,6 +1296,7 @@
     const $singleTimer = document.getElementById("singleTimer");
     const $singleStepPill = document.getElementById("singleStepPill");
     const $singleHint = document.getElementById("singleHint");
+    const $singleBox = document.getElementById("singleTimerBox");
 
     function resetSingleTimerUI(){
       if(singleInterval){
@@ -1225,6 +1339,9 @@
       if(!p) return;
       const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
       startSingleTimer(secs);
+
+      // SLIDE: porta l’utente sul timer singolo
+      scrollToEl($singleBox);
     };
 
     document.getElementById("singlePause").onclick = () => {
@@ -1238,12 +1355,11 @@
 
     document.getElementById("singleReset").onclick = () => resetSingleTimerUI();
 
-    // “Noch eine Übung” -> torna alla lista Übungen (come vuoi tu)
     document.getElementById("singleNext").onclick = () => {
       resetSingleTimerUI();
       $detail.classList.add("hide");
       $list.classList.remove("hide");
-      window.scrollTo({top:0, behavior:"smooth"});
+      scrollToEl(document.body);
     };
 
     // =========================
@@ -1256,6 +1372,9 @@
     if("serviceWorker" in navigator){
       navigator.serviceWorker.register("/sw.js").catch(()=>{});
     }
+
+    // prima render
+    renderList();
   </script>
 </body>
 </html>
