@@ -1,4 +1,4 @@
-const CACHE_NAME = "stuhl-yoga-v3";
+const CACHE_NAME = "stuhl-yoga-v4";
 
 const ASSETS = [
   "/",
