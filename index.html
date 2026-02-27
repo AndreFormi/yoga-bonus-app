@@ -237,22 +237,42 @@
       margin: 6px 0 0 18px;
     }
 
-    /* Install box */
+    /* Install box (più professionale) */
     .installCard{
       padding:14px;
       margin-top:10px;
     }
+    .installHead{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
     .installIcon{
-      width:64px;
-      height:64px;
-      border-radius:18px;
+      width:78px;
+      height:78px;
+      border-radius:22px;
       display:block;
+      border: 1px solid rgba(75,9,45,.18);
+      background: rgba(75,9,45,.06);
     }
     .installTitle{
       font-weight:900;
       font-size:16px;
       margin-bottom:2px;
+      letter-spacing:.2px;
     }
+    .installPills{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .installBtn{
+      background: var(--accent2);
+      color: var(--white);
+      border: 1px solid rgba(0,0,0,.12);
+    }
+    .installBtn:active{ transform: translateY(1px); }
 
     /* Small helper row under timers */
     .timerToggles{
@@ -272,24 +292,32 @@
     <div>
       <h1>Stuhl-Yoga für Senioren</h1>
 
-      <!-- INSTALL BOX (al posto della frase Home Screen) -->
+      <!-- INSTALL BOX -->
       <div class="card installCard" id="installCard">
-        <div class="row" style="align-items:center;">
+        <div class="installHead">
           <img src="./img/icon-192.png" alt="Stuhl-Yoga Icon" class="installIcon">
           <div>
-            <div class="installTitle">App installieren</div>
+            <div class="installTitle">App installieren (optional)</div>
             <div class="mutedDark" id="installHint">
-              Tippe auf „Installieren“, um die App auf dem Handy zu speichern.
+              Du kannst die App auch direkt im Browser benutzen.
+            </div>
+
+            <div class="installPills">
+              <span class="pill">Schneller Start</span>
+              <span class="pill">Offline nutzbar</span>
+              <span class="pill">Ohne Login</span>
             </div>
           </div>
         </div>
 
-        <div class="row" style="margin-top:10px;">
-          <button id="installBtn" class="hide">⬇️ Installieren</button>
+        <div class="row" style="margin-top:12px;">
+          <button id="installBtn" class="installBtn hide">⬇️ Installieren</button>
+          <button id="dismissInstall" class="secondary">Nicht jetzt</button>
         </div>
 
         <div class="mutedDark" id="installFallback" style="margin-top:10px; display:none;">
-          Wenn „Installieren“ nicht verfügbar ist: öffne den Link bitte in <b>Chrome</b> (Android) oder <b>Safari</b> (iPhone).
+          <div><b>Android:</b> bitte in <b>Chrome</b> öffnen → Menü (⋮) → <b>„App installieren“</b>.</div>
+          <div style="margin-top:6px;"><b>iPhone:</b> in <b>Safari</b> öffnen → Teilen → <b>„Zum Home-Bildschirm“</b>.</div>
         </div>
       </div>
     </div>
@@ -352,7 +380,6 @@
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Wähle eine Routine und drücke Start.</div>
 
-      <!-- Kurz-Anleitung in Routine (come "Übungen") -->
       <div id="poseMiniBox" class="miniBox hide">
         <h3>Anleitung (kurz)</h3>
         <ul id="poseMiniSteps"></ul>
@@ -363,7 +390,6 @@
         <span class="pill" id="routinePill">—</span>
       </div>
 
-      <!-- Toggles anche sotto al timer -->
       <div class="timerToggles">
         <label class="toggle" title="Tick jede Sekunde (optional)">
           <input type="checkbox" id="tickToggle3">
@@ -433,7 +459,6 @@
       <h3 style="margin:14px 0 8px">Häufige Fehler</h3>
       <ul id="dErrors"></ul>
 
-      <!-- Single timer resta QUI -->
       <div id="singleTimerBox" class="card" style="margin:12px 0 0; padding:14px;">
         <div class="row" style="justify-content:space-between;align-items:baseline;">
           <div class="installTitle">Übungs-Timer</div>
@@ -443,7 +468,6 @@
         <div class="big" id="singleTimer">00:00</div>
         <div class="mutedDark" id="singleHint" style="margin-top:6px;">—</div>
 
-        <!-- Toggles anche sotto al single timer -->
         <div class="timerToggles">
           <label class="toggle" title="Tick jede Sekunde (optional)">
             <input type="checkbox" id="tickToggle4">
@@ -563,372 +587,12 @@
     // =========================
     // DATI: ÜBUNGEN (DE) + categoria
     // =========================
-    const POSES = [
-      // ATMUNG & ENTSPANNUNG
-      {
-        id: "bauchatmung",
-        categoria: "Atmung & Entspannung",
-        nome: "Bauchatmung (Zwerchfellatmung)",
-        durataConsigliataSec: 60,
-        benefici: "Beruhigt den Puls und unterstützt die Entspannung.",
-        tags: ["atmung","entspannung","ruhe"],
-        immagine: "img/respirazione-addominale.png",
-        istruzioni: [
-          "Aufrecht sitzen, Schultern locker.",
-          "Durch die Nase einatmen – der Bauch hebt sich.",
-          "Langsam ausatmen – der Bauch senkt sich.",
-          "Ruhig und gleichmäßig weiteratmen."
-        ],
-        erroriComuni: [
-          "Nur in die Brust atmen.",
-          "Schultern hochziehen.",
-          "Zu schnell atmen."
-        ]
-      },
-      {
-        id: "atmung-4-6",
-        categoria: "Atmung & Entspannung",
-        nome: "Atmung 4–6 (ein 4 / aus 6)",
-        durataConsigliataSec: 60,
-        benefici: "Unterstützt Ruhe und hilft, Stress abzubauen.",
-        tags: ["atmung","stress","entspannung"],
-        immagine: "img/respirazione-4-6.png",
-        istruzioni: [
-          "Durch die Nase 4 Sekunden einatmen.",
-          "Durch den Mund 6 Sekunden ausatmen.",
-          "Locker bleiben – besonders im Nacken und in den Schultern."
-        ],
-        erroriComuni: [
-          "Atem anhalten ohne Absicht.",
-          "Zu stark pressen beim Ausatmen."
-        ]
-      },
-      {
-        id: "atmung-5-5",
-        categoria: "Atmung & Entspannung",
-        nome: "Resonanzatmung 5–5",
-        durataConsigliataSec: 60,
-        benefici: "Gleichmäßiger Atemrhythmus, fördert innere Ruhe.",
-        tags: ["atmung","ruhe","fokus"],
-        immagine: "img/respirazione-5-5.png",
-        istruzioni: [
-          "5 Sekunden einatmen.",
-          "5 Sekunden ausatmen.",
-          "Mehrere Atemzyklen ruhig wiederholen."
-        ],
-        erroriComuni: [
-          "Zu schnell werden.",
-          "Schultern anspannen."
-        ]
-      },
-      {
-        id: "entspannung-sitzen",
-        categoria: "Atmung & Entspannung",
-        nome: "Entspannendes Sitzen (Abschluss)",
-        durataConsigliataSec: 120,
-        benefici: "Löst Spannung und unterstützt Erholung.",
-        tags: ["entspannung","abschluss","ruhe"],
-        immagine: "img/entspannendes-sitzen.png",
-        istruzioni: [
-          "Bequem sitzen, Rücken gut abstützen.",
-          "Kiefer und Schultern entspannen.",
-          "Atem natürlich fließen lassen."
-        ],
-        erroriComuni: [
-          "Unruhig bleiben und ständig bewegen.",
-          "Unbequeme Position (Kissen nutzen, wenn nötig)."
-        ]
-      },
-
-      // RÜCKEN & WIRBELSÄULE
-      {
-        id: "gatto-mucca",
-        categoria: "Rücken & Wirbelsäule",
-        nome: "Katze–Kuh im Sitzen",
-        durataConsigliataSec: 60,
-        benefici: "Sanfte Mobilisation der Wirbelsäule, ideal zum Aufwärmen.",
-        tags: ["rücken","wirbelsäule","mobilität"],
-        immagine: "img/gatto-mucca-da-seduti.png",
-        istruzioni: [
-          "Aufrecht sitzen, Füße stabil am Boden.",
-          "Einatmen: Brust öffnen (Kuh).",
-          "Ausatmen: Rücken runden (Katze).",
-          "Ruhig im Atemrhythmus wiederholen."
-        ],
-        erroriComuni: [
-          "Nur den Nacken bewegen statt die ganze Wirbelsäule.",
-          "Zu stark ins Hohlkreuz gehen."
-        ]
-      },
-      {
-        id: "torsione-seduta",
-        categoria: "Rücken & Wirbelsäule",
-        nome: "Sitzende Drehung (rechts/links)",
-        durataConsigliataSec: 60,
-        benefici: "Verbessert die Beweglichkeit der Wirbelsäule und löst Spannung.",
-        tags: ["rücken","drehung","mobilität"],
-        immagine: "img/torsione-seduta-destra-sinistra.png",
-        istruzioni: [
-          "Aufrecht sitzen, Schultern locker.",
-          "Oberkörper langsam nach rechts drehen (ohne zu ziehen).",
-          "3–4 Atemzüge halten, zurück zur Mitte.",
-          "Links wiederholen."
-        ],
-        erroriComuni: [
-          "Zu stark mit den Armen ziehen.",
-          "Nach vorne zusammensacken."
-        ]
-      },
-      {
-        id: "vorbeuge",
-        categoria: "Rücken & Wirbelsäule",
-        nome: "Vorbeuge im Sitzen (langer Rücken)",
-        durataConsigliataSec: 60,
-        benefici: "Sanfte Dehnung für Rücken und Beinrückseite.",
-        tags: ["rücken","dehnung","sanft"],
-        immagine: "img/piegamento-in-avanti-seduti-schiena-lunga.png",
-        istruzioni: [
-          "Aufrecht sitzen, Rücken lang.",
-          "Langsam aus der Hüfte nach vorne neigen.",
-          "Nacken locker lassen, ruhig atmen.",
-          "Langsam wieder aufrichten."
-        ],
-        erroriComuni: [
-          "Rundrücken erzwingen.",
-          "Zu schnell in die Position fallen."
-        ]
-      },
-      {
-        id: "seitbeuge",
-        categoria: "Rücken & Wirbelsäule",
-        nome: "Seitliche Rumpfdehnung im Sitzen",
-        durataConsigliataSec: 60,
-        benefici: "Öffnet die Flanken, verbessert Beweglichkeit und Atmung.",
-        tags: ["rücken","seite","dehnung"],
-        immagine: "img/allungamento-laterale-busto-seduti.png",
-        istruzioni: [
-          "Aufrecht sitzen, einen Arm nach oben heben.",
-          "Oberkörper sanft zur Seite neigen.",
-          "Ruhig atmen, dann Seite wechseln."
-        ],
-        erroriComuni: [
-          "Schultern hochziehen.",
-          "Zu weit kippen statt sanft dehnen."
-        ]
-      },
-      {
-        id: "brustoeffnung",
-        categoria: "Rücken & Wirbelsäule",
-        nome: "Brustöffnung im Sitzen (Arme nach hinten)",
-        durataConsigliataSec: 60,
-        benefici: "Öffnet den Brustkorb, unterstützt eine aufrechte Haltung.",
-        tags: ["haltung","brust","schultern"],
-        immagine: "img/apertura-petto-braccia-indietro.png",
-        istruzioni: [
-          "Aufrecht sitzen, Schulterblätter sanft nach hinten.",
-          "Arme leicht nach hinten führen, Brust öffnen.",
-          "Ruhig atmen, Nacken weich."
-        ],
-        erroriComuni: [
-          "Ins Hohlkreuz fallen.",
-          "Schultern verspannen."
-        ]
-      },
-
-      // NACKEN & SCHULTERN
-      {
-        id: "nacken-seit",
-        categoria: "Nacken & Schultern",
-        nome: "Nacken-Dehnung seitlich",
-        durataConsigliataSec: 45,
-        benefici: "Entspannt Nacken und reduziert Schulterspannung.",
-        tags: ["nacken","schultern","entspannung"],
-        immagine: "img/inclinazione-laterale-collo.png",
-        istruzioni: [
-          "Aufrecht sitzen, Schultern locker.",
-          "Kopf sanft zur Seite neigen (ohne zu ziehen).",
-          "Ruhig atmen, dann Seite wechseln."
-        ],
-        erroriComuni: [
-          "Ziehen am Kopf mit der Hand.",
-          "Schultern hochziehen."
-        ]
-      },
-      {
-        id: "nacken-rotation",
-        categoria: "Nacken & Schultern",
-        nome: "Langsame Nacken-Rotation",
-        durataConsigliataSec: 45,
-        benefici: "Fördert Beweglichkeit und löst Verspannungen.",
-        tags: ["nacken","mobilität"],
-        immagine: "img/rotazioni-lente-del-collo.png",
-        istruzioni: [
-          "Kinn leicht zur Brust, dann langsam zur Seite rollen.",
-          "Sehr kleine, kontrollierte Bewegung.",
-          "Ruhig weiteratmen."
-        ],
-        erroriComuni: [
-          "Zu große Kreise machen.",
-          "Schmerzen ignorieren (dann stoppen)."
-        ]
-      },
-      {
-        id: "schultern-kreise",
-        categoria: "Nacken & Schultern",
-        nome: "Schulterkreisen",
-        durataConsigliataSec: 45,
-        benefici: "Mobilisiert Schultern und fördert Durchblutung.",
-        tags: ["schultern","mobilität"],
-        immagine: "img/circonduzioni-spalle.png",
-        istruzioni: [
-          "Schultern langsam nach hinten kreisen.",
-          "Dann Richtung wechseln (nach vorne).",
-          "Atmung ruhig halten."
-        ],
-        erroriComuni: [
-          "Zu schnell kreisen.",
-          "Nacken anspannen."
-        ]
-      },
-      {
-        id: "scapula-squeeze",
-        categoria: "Nacken & Schultern",
-        nome: "Schulterblätter zusammenziehen",
-        durataConsigliataSec: 45,
-        benefici: "Verbessert Haltung und stärkt oberen Rücken.",
-        tags: ["haltung","rücken","schultern"],
-        immagine: "img/spremi-scapole.png",
-        istruzioni: [
-          "Aufrecht sitzen, Arme locker neben dem Körper.",
-          "Schulterblätter sanft nach hinten/unten ziehen.",
-          "2 Sekunden halten, lösen – wiederholen."
-        ],
-        erroriComuni: [
-          "Schultern zu den Ohren ziehen.",
-          "Ins Hohlkreuz fallen."
-        ]
-      },
-
-      // HÜFTE & BEINE
-      {
-        id: "bein-strecken",
-        categoria: "Hüfte & Beine",
-        nome: "Beinstrecken im Sitzen",
-        durataConsigliataSec: 45,
-        benefici: "Kräftigt Oberschenkel und unterstützt Durchblutung.",
-        tags: ["beine","kraft","durchblutung"],
-        immagine: "img/estensione-gamba-seduto.png",
-        istruzioni: [
-          "Aufrecht sitzen, Füße am Boden.",
-          "Ein Bein langsam strecken, kurz halten.",
-          "Langsam absetzen, Seite wechseln."
-        ],
-        erroriComuni: [
-          "Zu ruckartig strecken.",
-          "Schultern anspannen."
-        ]
-      },
-      {
-        id: "knieheben",
-        categoria: "Hüfte & Beine",
-        nome: "Knieheben im Sitzen (langsames Marschieren)",
-        durataConsigliataSec: 45,
-        benefici: "Aktiviert Beine und Kreislauf, sehr seniorenfreundlich.",
-        tags: ["beine","kreislauf","sanft"],
-        immagine: "img/sollevamento-ginocchio-seduto.png",
-        istruzioni: [
-          "Abwechselnd ein Knie anheben.",
-          "Ruhig und kontrolliert, gleichmäßig atmen."
-        ],
-        erroriComuni: [
-          "Zu schnell werden.",
-          "Sich nach hinten werfen."
-        ]
-      },
-      {
-        id: "huefte-oeffnen",
-        categoria: "Hüfte & Beine",
-        nome: "Hüftöffnung im Sitzen",
-        durataConsigliataSec: 60,
-        benefici: "Öffnet die Hüfte und entspannt den unteren Rücken.",
-        tags: ["hüfte","dehnung","sanft"],
-        immagine: "img/figura-4-apertura-anca.png",
-        istruzioni: [
-          "Fußknöchel sanft auf das andere Knie legen.",
-          "Knie locker nach außen sinken lassen.",
-          "Ruhig atmen, dann Seite wechseln."
-        ],
-        erroriComuni: [
-          "Zu stark drücken.",
-          "Schmerzen ignorieren."
-        ]
-      },
-      {
-        id: "sprunggelenke",
-        categoria: "Hüfte & Beine",
-        nome: "Sprunggelenke kreisen",
-        durataConsigliataSec: 45,
-        benefici: "Fördert Beweglichkeit und Durchblutung in Füßen/Knöcheln.",
-        tags: ["füße","knöchel","durchblutung"],
-        immagine: "img/rotazioni-delle-caviglie.png",
-        istruzioni: [
-          "Einen Fuß leicht anheben.",
-          "Langsam im Kreis bewegen, Richtung wechseln.",
-          "Seite wechseln."
-        ],
-        erroriComuni: [
-          "Zu schnell kreisen.",
-          "Mit dem ganzen Bein wackeln statt im Knöchel."
-        ]
-      }
-    ];
+    const POSES = [/* ... INVARIATO: incolla qui il tuo array POSES ... */];
 
     // =========================
     // ROUTINEN
     // =========================
-    const routines = [
-      {
-        name: "Atmung & Entspannung (10 Minuten)",
-        image: "img/atmung-entspannung-10-minuten.png",
-        steps: [
-          { poseId:"bauchatmung", sec:60 },
-          { poseId:"atmung-4-6", sec:120 },
-          { poseId:"atmung-5-5", sec:180 },
-          { poseId:"entspannung-sitzen", sec:240 }
-        ]
-      },
-      {
-        name: "Rücken & Wirbelsäule (10 Minuten)",
-        image: "img/routine-schiena-colonna.png",
-        steps: [
-          { poseId:"gatto-mucca", sec:120 },
-          { poseId:"torsione-seduta", sec:120 },
-          { poseId:"vorbeuge", sec:120 },
-          { poseId:"seitbeuge", sec:120 },
-          { poseId:"brustoeffnung", sec:120 }
-        ]
-      },
-      {
-        name: "Nacken & Schultern (10 Minuten)",
-        image: "img/routine-collo-spalle.png",
-        steps: [
-          { poseId:"nacken-seit", sec:120 },
-          { poseId:"nacken-rotation", sec:120 },
-          { poseId:"schultern-kreise", sec:120 },
-          { poseId:"scapula-squeeze", sec:240 }
-        ]
-      },
-      {
-        name: "Hüfte & Beine (10 Minuten)",
-        image: "img/routine-huefte-beine.png",
-        steps: [
-          { poseId:"bein-strecken", sec:150 },
-          { poseId:"knieheben", sec:150 },
-          { poseId:"huefte-oeffnen", sec:180 },
-          { poseId:"sprunggelenke", sec:120 }
-        ]
-      }
-    ];
+    const routines = [/* ... INVARIATO: incolla qui il tuo array routines ... */];
 
     // =========================
     // NAV
@@ -985,7 +649,6 @@
 
     const $poseMiniBox=document.getElementById("poseMiniBox");
     const $poseMiniSteps=document.getElementById("poseMiniSteps");
-
     const $routineTimerCard = document.getElementById("routineTimerCard");
 
     function fmt(s){
@@ -1027,7 +690,7 @@
       const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:"", istruzioni:[]};
       remaining = step.sec;
 
-      $pose.textContent = pose.nome; // una sola volta
+      $pose.textContent = pose.nome;
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Schritt ${stepIdx+1}/${current.steps.length}`;
@@ -1091,7 +754,6 @@
 
     document.getElementById("start").onclick = async () => {
       try{ await getAudioCtx().resume(); }catch(e){}
-
       if(!current){
         current = routines[+sel.value];
         stepIdx=0;
@@ -1099,8 +761,6 @@
       }
       paused=false;
       if(!interval) interval=setInterval(tick,1000);
-
-      // SLIDE al timer
       scrollToEl($routineTimerCard);
     };
 
@@ -1157,7 +817,7 @@
     };
 
     // =========================
-    // ÜBUNGEN: LISTA + CATEGORIE
+    // ÜBUNGEN: LISTA + CATEGORIE (INVARIATO)
     // =========================
     const $list = document.getElementById("poseList");
     const $search = document.getElementById("search");
@@ -1272,7 +932,7 @@
     $search.oninput = renderList;
 
     // =========================
-    // SINGLE TIMER (INLINE)
+    // SINGLE TIMER (INVARIATO)
     // =========================
     let singleInterval = null;
     let singleRemaining = 0;
@@ -1322,8 +982,6 @@
       if(!p) return;
       const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
       startSingleTimer(secs);
-
-      // SLIDE al timer box (così non devono scrollare a mano)
       scrollToEl($singleTimerBox);
     };
 
@@ -1346,14 +1004,43 @@
     };
 
     // =========================
-    // INSTALL (persistente) - Android/Chrome
+    // INSTALL: banner fisso + sparisce se già installata
     // =========================
-    let deferredPrompt = null;
+    const installCard = document.getElementById("installCard");
     const installBtn = document.getElementById("installBtn");
     const installFallback = document.getElementById("installFallback");
+    const dismissInstall = document.getElementById("dismissInstall");
 
-    // Se non arriva mai beforeinstallprompt, mostriamo un hint
+    function isStandalone(){
+      // iOS + Android
+      return window.matchMedia("(display-mode: standalone)").matches
+        || window.navigator.standalone === true;
+    }
+
+    // Se già installata: nascondi banner
+    if(isStandalone()){
+      installCard.classList.add("hide");
+    }
+
+    // Se utente lo chiude: ricorda (1 settimana)
+    const DISMISS_KEY = "yoga_install_dismissed_ts";
+    const dismissedTs = parseInt(localStorage.getItem(DISMISS_KEY) || "0", 10);
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+    if(dismissedTs && (Date.now() - dismissedTs) < oneWeek){
+      installCard.classList.add("hide");
+    }
+
+    dismissInstall.addEventListener("click", () => {
+      localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      installCard.classList.add("hide");
+    });
+
+    // Android/Chrome event
+    let deferredPrompt = null;
+
+    // Dopo 2.5s: se non c'è prompt, mostra istruzioni manuali (iPhone / in-app browser)
     setTimeout(() => {
+      if(isStandalone()) return;
       if(!deferredPrompt && installBtn.classList.contains("hide")){
         installFallback.style.display = "block";
       }
@@ -1362,7 +1049,7 @@
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.classList.remove("hide"); // resta visibile finché vuoi tu
+      installBtn.classList.remove("hide");
       installFallback.style.display = "none";
     });
 
@@ -1371,7 +1058,13 @@
       deferredPrompt.prompt();
       await deferredPrompt.userChoice;
       deferredPrompt = null;
-      installBtn.classList.add("hide");
+      // Non lo nascondo per forza: lasciamolo, ma se installano davvero spesso sparisce al reload
+      // installBtn.classList.add("hide");
+    });
+
+    // Se installano: nascondi banner
+    window.addEventListener("appinstalled", () => {
+      installCard.classList.add("hide");
     });
 
     // =========================
@@ -1380,7 +1073,6 @@
     syncToggles();
     attachToggleHandlers();
 
-    // PWA (percorsi relativi per evitare problemi in sottocartella)
     if("serviceWorker" in navigator){
       navigator.serviceWorker.register("./sw.js").catch(()=>{});
     }
