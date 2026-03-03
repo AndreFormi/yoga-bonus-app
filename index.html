@@ -8,8 +8,8 @@
   <link rel="manifest" href="./manifest.webmanifest">
 
   <!-- PWA / Icons -->
-  <link rel="icon" href="./img/icon-512.png">
-  <link rel="apple-touch-icon" href="./img/icon-512.png">
+  <link rel="icon" href="./img/icon-192.png">
+  <link rel="apple-touch-icon" href="./img/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
@@ -247,12 +247,35 @@
       height:64px;
       border-radius:18px;
       display:block;
+      box-shadow: 0 10px 22px rgba(0,0,0,.12);
+      border: 1px solid rgba(75,9,45,.18);
+      background: rgba(75,9,45,.06);
     }
     .installTitle{
       font-weight:900;
       font-size:16px;
       margin-bottom:2px;
     }
+
+    /* NEW: install button professional */
+    .installCta{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      border: 1px solid rgba(0,0,0,.15);
+      box-shadow: var(--shadow);
+      background: var(--accent);
+      color:#0b0b0b;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .installCta:active{ transform: translateY(1px); }
+    .installCta small{ font-weight: 800; opacity:.85; }
 
     /* Small helper row under timers */
     .timerToggles{
@@ -272,24 +295,27 @@
     <div>
       <h1>Stuhl-Yoga für Senioren</h1>
 
-      <!-- INSTALL BOX (al posto della frase Home Screen) -->
+      <!-- INSTALL BOX -->
       <div class="card installCard" id="installCard">
         <div class="row" style="align-items:center;">
           <img src="./img/icon-512.png" alt="Stuhl-Yoga Icon" class="installIcon">
           <div>
             <div class="installTitle">App installieren</div>
             <div class="mutedDark" id="installHint">
-              Tippe auf „Installieren“, um die App auf dem Handy zu speichern.
+              Du kannst die App installieren – oder sie einfach im Browser nutzen.
             </div>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px;">
-          <button id="installBtn" class="hide">⬇️ Installieren</button>
+          <button id="installBtn" class="installCta hide" type="button">
+            ⬇️ Installieren <small>(empfohlen)</small>
+          </button>
         </div>
 
         <div class="mutedDark" id="installFallback" style="margin-top:10px; display:none;">
-          Wenn „Installieren“ nicht verfügbar ist: öffne den Link bitte in <b>Chrome</b> (Android) oder <b>Safari</b> (iPhone).
+          iPhone: tippe auf <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>.<br>
+          Android: öffne den Link in <b>Chrome</b>.
         </div>
       </div>
     </div>
@@ -352,7 +378,7 @@
       <div class="big" id="timer">00:00</div>
       <div class="mutedDark" id="poseInfo">Wähle eine Routine und drücke Start.</div>
 
-      <!-- Kurz-Anleitung in Routine (come "Übungen") -->
+      <!-- Kurz-Anleitung in Routine -->
       <div id="poseMiniBox" class="miniBox hide">
         <h3>Anleitung (kurz)</h3>
         <ul id="poseMiniSteps"></ul>
@@ -363,7 +389,6 @@
         <span class="pill" id="routinePill">—</span>
       </div>
 
-      <!-- Toggles anche sotto al timer -->
       <div class="timerToggles">
         <label class="toggle" title="Tick jede Sekunde (optional)">
           <input type="checkbox" id="tickToggle3">
@@ -443,7 +468,6 @@
         <div class="big" id="singleTimer">00:00</div>
         <div class="mutedDark" id="singleHint" style="margin-top:6px;">—</div>
 
-        <!-- Toggles anche sotto al single timer -->
         <div class="timerToggles">
           <label class="toggle" title="Tick jede Sekunde (optional)">
             <input type="checkbox" id="tickToggle4">
@@ -466,12 +490,27 @@
 
   <script>
     // =========================
-    // Smooth scroll helper
+    // Smooth scroll helper (FIX mobile: scroll sempre preciso)
     // =========================
-    function scrollToEl(el){
+    function scrollToEl(el, topPadPx = 10){
       if(!el) return;
-      el.scrollIntoView({ behavior:"smooth", block:"start" });
+      const y = el.getBoundingClientRect().top + window.pageYOffset - topPadPx;
+      window.scrollTo({ top: Math.max(0, y), behavior:"smooth" });
     }
+
+    // =========================
+    // PWA: hide install card when already installed / standalone
+    // =========================
+    const installCard = document.getElementById("installCard");
+    function isStandalone(){
+      return window.matchMedia("(display-mode: standalone)").matches
+        || window.matchMedia("(display-mode: fullscreen)").matches
+        || window.navigator.standalone === true;
+    }
+    function hideInstallCard(){
+      installCard?.classList.add("hide");
+    }
+    if(isStandalone()) hideInstallCard();
 
     // =========================
     // AUDIO (WebAudio): tick + gong (senza file)
@@ -943,7 +982,7 @@
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
-      scrollToEl(posesView);
+      scrollToEl(posesView, 12);
     };
 
     // =========================
@@ -1027,7 +1066,7 @@
       const pose = getPoseById(step.poseId) || {nome:"Übung", benefici:"", immagine:"", istruzioni:[]};
       remaining = step.sec;
 
-      $pose.textContent = pose.nome; // una sola volta
+      $pose.textContent = pose.nome;
       $info.textContent = pose.benefici || "—";
       $timer.textContent = fmt(remaining);
       $stepPill.textContent = `Schritt ${stepIdx+1}/${current.steps.length}`;
@@ -1100,8 +1139,8 @@
       paused=false;
       if(!interval) interval=setInterval(tick,1000);
 
-      // SLIDE al timer
-      scrollToEl($routineTimerCard);
+      // SCROLL preciso al timer (non si ferma a metà)
+      scrollToEl($routineTimerCard, 12);
     };
 
     document.getElementById("pause").onclick = () => paused=true;
@@ -1114,7 +1153,7 @@
         return;
       }
       loadStep();
-      scrollToEl($routineTimerCard);
+      scrollToEl($routineTimerCard, 12);
     };
 
     document.getElementById("prev").onclick = () => {
@@ -1122,7 +1161,7 @@
       if(stepIdx <= 0) return;
       stepIdx--;
       loadStep();
-      scrollToEl($routineTimerCard);
+      scrollToEl($routineTimerCard, 12);
     };
 
     document.getElementById("reset").onclick = () => hardResetRoutineUI();
@@ -1136,14 +1175,14 @@
       loadStep();
       paused = false;
       if(!interval) interval=setInterval(tick,1000);
-      scrollToEl($routineTimerCard);
+      scrollToEl($routineTimerCard, 12);
     };
 
     document.getElementById("toExercises").onclick = () => {
       posesView.classList.remove("hide");
       timerView.classList.add("hide");
       renderList();
-      scrollToEl(posesView);
+      scrollToEl(posesView, 12);
     };
 
     document.getElementById("otherRoutine").onclick = () => {
@@ -1323,8 +1362,8 @@
       const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
       startSingleTimer(secs);
 
-      // SLIDE al timer box (così non devono scrollare a mano)
-      scrollToEl($singleTimerBox);
+      // SCROLL preciso al timer box (non si ferma a metà)
+      scrollToEl($singleTimerBox, 12);
     };
 
     document.getElementById("singlePause").onclick = () => {
@@ -1346,23 +1385,31 @@
     };
 
     // =========================
-    // INSTALL (persistente) - Android/Chrome
+    // INSTALL (Android/Chrome + iOS fallback)
     // =========================
     let deferredPrompt = null;
     const installBtn = document.getElementById("installBtn");
     const installFallback = document.getElementById("installFallback");
 
-    // Se non arriva mai beforeinstallprompt, mostriamo un hint
-    setTimeout(() => {
-      if(!deferredPrompt && installBtn.classList.contains("hide")){
-        installFallback.style.display = "block";
-      }
-    }, 2500);
+    // Se è già installata, non mostrare niente
+    if(isStandalone()){
+      // già gestito sopra, ma doppia sicurezza
+      hideInstallCard();
+    }else{
+      // Se non arriva beforeinstallprompt, mostriamo un hint
+      setTimeout(() => {
+        if(isStandalone()) return;
+        if(!deferredPrompt && installBtn.classList.contains("hide")){
+          installFallback.style.display = "block";
+        }
+      }, 2500);
+    }
 
     window.addEventListener("beforeinstallprompt", (e) => {
+      if(isStandalone()) return;
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.classList.remove("hide"); // resta visibile finché vuoi tu
+      installBtn.classList.remove("hide");
       installFallback.style.display = "none";
     });
 
@@ -1372,6 +1419,12 @@
       await deferredPrompt.userChoice;
       deferredPrompt = null;
       installBtn.classList.add("hide");
+      // non la nascondo qui: alcuni browser non installano subito, ma:
+      // se installa davvero, scatta appinstalled e la nascondiamo.
+    });
+
+    window.addEventListener("appinstalled", () => {
+      hideInstallCard();
     });
 
     // =========================
@@ -1380,10 +1433,14 @@
     syncToggles();
     attachToggleHandlers();
 
-    // PWA (percorsi relativi per evitare problemi in sottocartella)
+    // PWA
     if("serviceWorker" in navigator){
       navigator.serviceWorker.register("./sw.js").catch(()=>{});
     }
+
+    // prima render se vai direttamente su Übungen
+    // (non serve, ma non fa male)
+    // renderList();
   </script>
 </body>
 </html>
