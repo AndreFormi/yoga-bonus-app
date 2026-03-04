@@ -507,6 +507,8 @@
     }
   }catch(e){}
 }
+    // UMAMI: track apertura app
+track("app_open");
 
     // =========================
     // PWA: hide install card when already installed / standalone
@@ -1373,6 +1375,7 @@
       if(!p) return;
       const secs = p.durataConsigliataSec ? p.durataConsigliataSec : 60;
       startSingleTimer(secs);
+      track("exercise_timer_started", { exercise: p.nome });
 
       // SCROLL preciso al timer box (non si ferma a metà)
       scrollToEl($singleTimerBox, 12);
