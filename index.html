@@ -499,6 +499,14 @@
       const y = el.getBoundingClientRect().top + window.pageYOffset - topPadPx;
       window.scrollTo({ top: Math.max(0, y), behavior:"smooth" });
     }
+    
+    function track(name, data){
+  try{
+    if(window.umami && typeof window.umami.track === "function"){
+      window.umami.track(name, data);
+    }
+  }catch(e){}
+}
 
     // =========================
     // PWA: hide install card when already installed / standalone
@@ -1138,6 +1146,8 @@
         stepIdx=0;
         loadStep();
       }
+
+      track("routine_started", { routine: current?.name || "unknown" });
       paused=false;
       if(!interval) interval=setInterval(tick,1000);
 
@@ -1414,21 +1424,28 @@
       installBtn.classList.remove("hide");
       installFallback.style.display = "none";
     });
+installBtn.addEventListener("click", async () => {
 
-    installBtn.addEventListener("click", async () => {
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.classList.add("hide");
-      // non la nascondo qui: alcuni browser non installano subito, ma:
-      // se installa davvero, scatta appinstalled e la nascondiamo.
-    });
+  track("install_click");
 
-    window.addEventListener("appinstalled", () => {
-      hideInstallCard();
-    });
+  if(!deferredPrompt){
+    track("install_not_available");
+    return;
+  }
 
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
+  installBtn.classList.add("hide");
+  // non la nascondo qui: alcuni browser non installano subito
+  // se installa davvero, scatta appinstalled e la nascondiamo.
+});
+
+window.addEventListener("appinstalled", () => {
+  track("app_installed");
+  hideInstallCard();
+});
     // =========================
     // INIT
     // =========================
